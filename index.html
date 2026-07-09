@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>USMT — Unified Solana Token</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Solana Web3.js -->
+    <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #06080f;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* --- video background --- */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .overlay-dark {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(6, 8, 15, 0.82);
+            z-index: -1;
+        }
+
+        /* --- marquee --- */
+        @keyframes marquee1 {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            display: flex;
+            white-space: nowrap;
+            animation: marquee1 35s linear infinite;
+            width: max-content;
+        }
+        .marquee-container {
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(4px);
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .marquee-container span {
+            margin: 0 50px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .marquee-container span i {
+            color: #00D4FF;
+            margin-right: 10px;
+        }
+
+        /* --- glassmorphism (PESO style) --- */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 32px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 212, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* --- gradient text --- */
+        .gradient-text {
+            background: linear-gradient(135deg, #9945FF 0%, #00D4FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- buttons --- */
+        .btn-primary {
+            background: linear-gradient(135deg, #9945FF, #00D4FF);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            border-radius: 60px;
+            padding: 14px 36px;
+        }
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
+        }
+        .btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: transparent;
+            color: #fff;
+            border-radius: 60px;
+            padding: 14px 36px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .btn-outline:hover {
+            border-color: #00D4FF;
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* --- stats numbers (PESO style) --- */
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 6px;
+        }
+
+        /* --- language buttons --- */
+        .lang-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.3);
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+        .lang-btn.active {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.3);
+            color: #fff;
+        }
+        .lang-btn:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* --- partner logos --- */
+        .partner-logo {
+            filter: grayscale(100%) brightness(2) opacity(0.4);
+            transition: 0.4s ease;
+            height: 28px;
+            width: auto;
+        }
+        .partner-logo:hover {
+            filter: grayscale(0%) brightness(1) opacity(1);
+        }
+
+        /* --- balance --- */
+        #balance {
+            font-family: 'Inter', monospace;
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        /* --- status dot --- */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse-dot 1.8s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.6); }
+        }
+
+        /* --- footer --- */
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* --- scrollbar --- */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #06080f; }
+        ::-webkit-scrollbar-thumb { background: #9945FF; border-radius: 10px; }
+
+        /* --- responsive tweaks --- */
+        @media (max-width: 640px) {
+            .stat-number { font-size: 2rem; }
+            .marquee-container span { font-size: 0.7rem; margin: 0 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== VIDEO BACKGROUND ===== -->
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+        <!-- Replace with your own video -->
+    </video>
+    <div class="overlay-dark"></div>
+
+    <!-- ===== TOP MARQUEE ===== -->
+    <div class="marquee-container">
+        <div class="marquee-track">
+            <span><i class="fas fa-cube"></i> USMT — Unified Solana Token</span>
+            <span><i class="fas fa-graduation-cap"></i> Education · DeFi · Social Impact</span>
+            <span><i class="fas fa-coins"></i> 10B supply · $0.25 · 0.15% tax</span>
+            <span><i class="fas fa-credit-card"></i> USMTPAY · USMTBANK</span>
+            <span><i class="fas fa-globe"></i> Built on Solana</span>
+            <span><i class="fas fa-cube"></i> USMT — Unified Solana Token</span>
+            <span><i class="fas fa-graduation-cap"></i> Education · DeFi · Social Impact</span>
+            <span><i class="fas fa-coins"></i> 10B supply · $0.25 · 0.15% tax</span>
+            <span><i class="fas fa-credit-card"></i> USMTPAY · USMTBANK</span>
+            <span><i class="fas fa-globe"></i> Built on Solana</span>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+
+        <!-- ===== HERO ===== -->
+        <div class="text-center">
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <i class="fas fa-cube text-5xl gradient-text"></i>
+                <h1 class="text-6xl sm:text-7xl md:text-8xl font-black tracking-tight">
+                    <span class="gradient-text">USMT</span>
+                </h1>
+            </div>
+            <p class="text-white/40 text-sm sm:text-base font-light tracking-[0.3em] uppercase mt-1">
+                Unified Solana Token
+            </p>
+
+            <!-- Tagline PESO-style -->
+            <div class="mt-5 flex flex-wrap justify-center gap-3">
+                <span class="px-5 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-xs tracking-wider">
+                    <i class="fas fa-graduation-cap text-cyan-400 mr-2"></i> Education
+                </span>
+                <span class="px-5 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-xs tracking-wider">
+                    <i class="fas fa-chart-line text-purple-400 mr-2"></i> DeFi
+                </span>
+                <span class="px-5 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-xs tracking-wider">
+                    <i class="fas fa-heart text-rose-400 mr-2"></i> Social Impact
+                </span>
+            </div>
+        </div>
+
+        <!-- ===== DESCRIPTION CARD ===== -->
+        <div class="glass p-6 md:p-10 mt-8 text-center max-w-3xl mx-auto">
+            <p class="text-white/70 text-sm md:text-base leading-relaxed font-light">
+                USMT is an innovative Solana project focused on education, DeFi, and social impact.
+                Transparent governance through DAO, staking, and built-in philanthropy.
+                Ecosystem includes <strong class="text-cyan-300 font-semibold">USMTPAY</strong> &amp;
+                <strong class="text-purple-300 font-semibold">USMTBANK</strong> —
+                real-world utility for payments and banking.
+            </p>
+        </div>
+
+        <!-- ===== STATS (PESO style big numbers) ===== -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-3xl mx-auto">
+            <div class="glass-card p-5 text-center">
+                <div class="stat-number text-white">10B</div>
+                <div class="stat-label">Supply</div>
+            </div>
+            <div class="glass-card p-5 text-center">
+                <div class="stat-number text-green-300">$0.25</div>
+                <div class="stat-label">Price</div>
+            </div>
+            <div class="glass-card p-5 text-center">
+                <div class="stat-number text-yellow-300">0.15%</div>
+                <div class="stat-label">Tax</div>
+            </div>
+            <div class="glass-card p-5 text-center">
+                <div class="stat-number text-cyan-300">SOL</div>
+                <div class="stat-label">Blockchain</div>
+            </div>
+        </div>
+
+        <!-- ===== WALLET SECTION ===== -->
+        <div class="glass p-6 md:p-8 mt-8 max-w-2xl mx-auto">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button id="connectWallet" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-3">
+                    <i class="fas fa-wallet"></i> Connect Phantom
+                </button>
+                <div class="glass-card px-5 py-3 rounded-full text-sm border border-white/5 flex items-center gap-3 w-full sm:w-auto justify-center">
+                    <i class="fas fa-coins text-cyan-400"></i>
+                    <span>Balance: <span id="balance">0.000</span> USMT</span>
+                </div>
+            </div>
+            <div id="walletStatus" class="text-center text-xs text-white/30 mt-3 flex items-center justify-center gap-2">
+                <span class="status-dot"></span> Wallet not connected
+            </div>
+        </div>
+
+        <!-- ===== ACTION BUTTONS ===== -->
+        <div class="flex flex-wrap justify-center gap-3 mt-6">
+            <button class="btn-primary text-sm flex items-center gap-2">
+                <i class="fas fa-arrow-up"></i> Buy USMT
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2">
+                <i class="fas fa-arrow-down"></i> Sell
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2">
+                <i class="fas fa-chart-line"></i> Chart
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2">
+                <i class="fas fa-file-alt"></i> Whitepaper
+            </button>
+        </div>
+
+        <!-- ===== ECOSYSTEM: USMTPAY + USMTBANK ===== -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10 max-w-3xl mx-auto">
+            <div class="glass-card p-6 text-center border-t-2 border-cyan-400/20">
+                <div class="text-4xl mb-3 text-cyan-400"><i class="fas fa-credit-card"></i></div>
+                <h3 class="text-lg font-bold text-white">USMTPAY</h3>
+                <p class="text-white/40 text-sm mt-1 font-light">Seamless payments with USMT</p>
+            </div>
+            <div class="glass-card p-6 text-center border-t-2 border-purple-400/20">
+                <div class="text-4xl mb-3 text-purple-400"><i class="fas fa-university"></i></div>
+                <h3 class="text-lg font-bold text-white">USMTBANK</h3>
+                <p class="text-white/40 text-sm mt-1 font-light">Decentralized banking on Solana</p>
+            </div>
+        </div>
+
+        <!-- ===== PARTNERS ===== -->
+        <div class="glass p-6 mt-10 max-w-3xl mx-auto">
+            <p class="text-center text-white/20 text-xs uppercase tracking-[0.3em] mb-5">Trusted Partners</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/solana/solana-original.svg" alt="Solana" class="partner-logo" />
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/phantom/phantom-original.svg" alt="Phantom" class="partner-logo" />
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/oracle/oracle-original.svg" alt="Oracle" class="partner-logo" />
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg" alt="AWS" class="partner-logo" />
+                <span class="text-white/20 text-sm font-light tracking-wider">+ 8 others</span>
+            </div>
+        </div>
+
+        <!-- ===== LANGUAGE SELECTOR (8 languages) ===== -->
+        <div class="flex flex-wrap justify-center gap-2 mt-10">
+            <button class="lang-btn active" data-lang="en">🇬🇧 EN</button>
+            <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+            <button class="lang-btn" data-lang="es">🇪🇸 ES</button>
+            <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+            <button class="lang-btn" data-lang="de">🇩🇪 DE</button>
+            <button class="lang-btn" data-lang="zh">🇨🇳 中文</button>
+            <button class="lang-btn" data-lang="ja">🇯🇵 日本語</button>
+            <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+        </div>
+
+        <!-- ===== BOTTOM MARQUEE ===== -->
+        <div class="marquee-container mt-10">
+            <div class="marquee-track">
+                <span><i class="fas fa-bolt text-yellow-400"></i> USMT — the future of decentralized finance</span>
+                <span><i class="fas fa-hand-holding-heart text-rose-400"></i> Built-in philanthropy with every transaction</span>
+                <span><i class="fas fa-rocket text-cyan-400"></i> DAO governance · Staking · USMTPAY · USMTBANK</span>
+                <span><i class="fas fa-bolt text-yellow-400"></i> USMT — the future of decentralized finance</span>
+                <span><i class="fas fa-hand-holding-heart text-rose-400"></i> Built-in philanthropy with every transaction</span>
+                <span><i class="fas fa-rocket text-cyan-400"></i> DAO governance · Staking · USMTPAY · USMTBANK</span>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer text-center py-6 mt-6">
+            &copy; 2026 USMT — Unified Solana Token. Built with ❤️ on Solana.
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ---- ELEMENTS ----
+            const connectBtn = document.getElementById('connectWallet');
+            const balanceSpan = document.getElementById('balance');
+            const walletStatus = document.getElementById('walletStatus');
+
+            let walletAddress = null;
+
+            // ---- CONNECT PHANTOM ----
+            async function connectPhantom() {
+                if (!window.solana || !window.solana.isPhantom) {
+                    alert('Please install Phantom Wallet!');
+                    return;
+                }
+                try {
+                    const resp = await window.solana.connect();
+                    walletAddress = resp.publicKey.toString();
+                    walletStatus.innerHTML = `
+                        <span class="status-dot"></span>
+                        Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
+                    `;
+                    connectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
+                    connectBtn.classList.remove('btn-primary');
+                    connectBtn.classList.add('bg-emerald-600/80', 'hover:bg-emerald-500');
+                    // random balance simulation (real RPC would go here)
+                    fetchBalance(walletAddress);
+                } catch (err) {
+                    console.error(err);
+                    alert('Connection failed');
+                }
+            }
+
+            // ---- SIMULATE BALANCE ----
+            function fetchBalance(address) {
+                // In production: call Solana RPC to get real USMT balance
+                const fakeBalance = (Math.random() * 15000 + 200).toFixed(3);
+                balanceSpan.innerText = fakeBalance;
+                // subtle animation
+                balanceSpan.style.transition = 'opacity 0.3s';
+                balanceSpan.style.opacity = '0.4';
+                setTimeout(() => { balanceSpan.style.opacity = '1'; }, 150);
+            }
+
+            // ---- EVENT LISTENER ----
+            connectBtn.addEventListener('click', connectPhantom);
+
+            // ---- AUTO-CONNECT ON LOAD ----
+            window.addEventListener('load', async () => {
+                if (window.solana && window.solana.isPhantom && window.solana.isConnected) {
+                    try {
+                        const resp = await window.solana.connect({ onlyIfTrusted: true });
+                        walletAddress = resp.publicKey.toString();
+                        walletStatus.innerHTML = `
+                            <span class="status-dot"></span>
+                            Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
+                        `;
+                        connectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
+                        connectBtn.classList.remove('btn-primary');
+                        connectBtn.classList.add('bg-emerald-600/80', 'hover:bg-emerald-500');
+                        fetchBalance(walletAddress);
+                    } catch (e) {
+                        // user denied or no wallet
+                        console.log('Auto-connect skipped');
+                    }
+                }
+            });
+
+            // ---- LANGUAGE SWITCHER (8 languages) ----
+            const langBtns = document.querySelectorAll('.lang-btn');
+            const translations = {
+                en: {
+                    desc: 'USMT is an innovative Solana project focused on education, DeFi, and social impact. Transparent governance through DAO, staking, and built-in philanthropy. Ecosystem includes USMTPAY & USMTBANK — real-world utility for payments and banking.'
+                },
+                ru: {
+                    desc: 'USMT — инновационный проект на Solana, ориентированный на образование, DeFi и социальное влияние. Прозрачное управление через DAO, стейкинг и встроенная благотворительность. Экосистема включает USMTPAY и USMTBANK — реальная полезность для платежей и банкинга.'
+                },
+                es: {
+                    desc: 'USMT es un proyecto innovador de Solana centrado en educación, DeFi e impacto social. Gobernanza transparente a través de DAO, staking y filantropía integrada. El ecosistema incluye USMTPAY y USMTBANK — utilidad real para pagos y banca.'
+                },
+                fr: {
+                    desc: 'USMT est un projet innovant sur Solana axé sur l\'éducation, DeFi et l\'impact social. Gouvernance transparente via DAO, staking et philanthropie intégrée. L\'écosystème comprend USMTPAY et USMTBANK — utilité réelle pour les paiements et les services bancaires.'
+                },
+                de: {
+                    desc: 'USMT ist ein innovatives Solana-Projekt mit Fokus auf Bildung, DeFi und soziale Wirkung. Transparente Governance durch DAO, Staking und integrierte Philanthropie. Das Ökosystem umfasst USMTPAY und USMTBANK — echten Nutzen für Zahlungen und Banking.'
+                },
+                zh: {
+                    desc: 'USMT 是一个创新的 Solana 项目，专注于教育、DeFi 和社会影响。通过 DAO、质押和内置慈善实现透明治理。生态系统包括 USMTPAY 和 USMTBANK — 为支付和银行业务提供现实世界的实用性。'
+                },
+                ja: {
+                    desc: 'USMTは、教育、DeFi、社会的インパクトに焦点を当てた革新的なSolanaプロジェクトです。DAO、ステーキング、内蔵された慈善活動による透明なガバナンス。エコシステムにはUSMTPAYとUSMTBANKが含まれます — 決済とバンキングのための現実世界のユーティリティ。'
+                },
+                ar: {
+                    desc: 'USMT هو مشروع Solana مبتكر يركز على التعليم والتمويل اللامركزي والتأثير الاجتماعي. حوكمة شفافة من خلال DAO والتخزين والعمل الخيري المدمج. تشمل النظام البيئي USMTPAY و USMTBANK — فائدة حقيقية للمدفوعات والخدمات المصرفية.'
+                }
+            };
+
+            langBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    langBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const lang = this.dataset.lang;
+                    const t = translations[lang];
+                    if (t) {
+                        const descP = document.querySelector('.glass p');
+                        if (descP) {
+                            // preserve bold tags
+                            let newText = t.desc;
+                            // re-add bold for USMTPAY & USMTBANK
+                            newText = newText.replace(/USMTPAY/g, '<strong class="text-cyan-300 font-semibold">USMTPAY</strong>');
+                            newText = newText.replace(/USMTBANK/g, '<strong class="text-purple-300 font-semibold">USMTBANK</strong>');
+                            descP.innerHTML = newText;
+                        }
+                    }
+                });
+            });
+
+            // ---- ACTION BUTTONS (demo) ----
+            document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const text = this.innerText.trim();
+                    if (text.includes('Buy')) {
+                        if (!walletAddress) { alert('Connect wallet first!'); return; }
+                        alert('🟢 Demo: Buy USMT (simulated)');
+                    } else if (text.includes('Sell')) {
+                        if (!walletAddress) { alert('Connect wallet first!'); return; }
+                        alert('🔴 Demo: Sell USMT (simulated)');
+                    } else if (text.includes('Chart')) {
+                        alert('📊 Demo: USMT chart (coming soon)');
+                    } else if (text.includes('Whitepaper')) {
+                        alert('📄 Demo: Whitepaper (download)');
+                    }
+                });
+            });
+
+        })();
+    </script>
+</body>
+</html>
