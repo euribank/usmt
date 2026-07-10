@@ -11,7 +11,6 @@
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
 
     <style>
-        /* ===== ВСЕ СТИЛИ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #06080f;
@@ -28,6 +27,7 @@
             height: 100%;
             object-fit: cover;
             z-index: -2;
+            background: url('hero-bg.jpg') center/cover no-repeat;
         }
         .overlay-dark {
             position: fixed;
@@ -374,7 +374,7 @@
 
     <!-- ===== VIDEO BACKGROUND ===== -->
     <video id="bg-video" autoplay muted loop playsinline>
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+        <source src="hero-bg.mp4" type="video/mp4" />
     </video>
     <div class="overlay-dark"></div>
 
@@ -410,8 +410,8 @@
 
         <!-- ===== HERO ===== -->
         <div class="text-center">
-            <div class="flex items-center justify-center gap-3 mb-2">
-                <i class="fas fa-cube text-5xl gradient-text"></i>
+            <div class="flex items-center justify-center gap-4 mb-2">
+                <img src="usmt-logo.png" alt="USMT Logo" class="w-16 h-16 md:w-24 md:h-24 object-contain" />
                 <h1 class="text-6xl sm:text-7xl md:text-8xl font-black tracking-tight">
                     <span class="gradient-text">USMT</span>
                 </h1>
@@ -420,7 +420,6 @@
                 Unified Solana Token — 100+ Premium Services
             </p>
 
-            <!-- Цена в реальном времени -->
             <div class="mt-4 flex flex-wrap justify-center gap-3">
                 <span class="price-ticker">
                     <i class="fas fa-coins text-cyan-400 mr-1"></i> USMT: <span id="livePrice">$0.25</span>
@@ -539,9 +538,10 @@
                     <div class="card-chip"></div>
                     <div class="flex justify-between items-end mt-4">
                         <div>
-                            <p class="text-white/40 text-xs uppercase tracking-wider">Balance</p>
+                            <p class="text-white/40 text-xs uppercase tracking-wider">Card Balance</p>
                             <p class="text-2xl font-bold text-white" id="cardBalance">$0.00</p>
                             <p class="text-white/30 text-xs" id="cardUSMT">0.000 USMT</p>
+                            <p class="text-white/20 text-[10px] mt-1">30% of total balance available</p>
                         </div>
                         <div class="text-right">
                             <p class="text-white/40 text-xs">Card Number</p>
@@ -596,22 +596,22 @@
                 <i class="fas fa-gem text-cyan-400 mr-2"></i> Premium Assets
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('gems')">
+                <div class="glass-card" onclick="openModal('gems')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-gem"></i></div>
                     <div class="service-title">Gems &amp; Metals</div>
                     <div class="service-desc">Gold, Silver, Diamonds</div>
                 </div>
-                <div class="glass-card" onclick="openModal('jets')">
+                <div class="glass-card" onclick="openModal('jets')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-plane"></i></div>
                     <div class="service-title">Private Jets</div>
                     <div class="service-desc">Global charter service</div>
                 </div>
-                <div class="glass-card" onclick="openModal('yachts')">
+                <div class="glass-card" onclick="openModal('yachts')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-blue-400"><i class="fas fa-ship"></i></div>
                     <div class="service-title">Yachts</div>
                     <div class="service-desc">Superyacht rentals</div>
                 </div>
-                <div class="glass-card" onclick="openModal('real-estate')">
+                <div class="glass-card" onclick="openModal('real-estate')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-rose-400"><i class="fas fa-building"></i></div>
                     <div class="service-title">Real Estate</div>
                     <div class="service-desc">Global properties</div>
@@ -625,22 +625,22 @@
                 <i class="fas fa-chart-pie text-purple-400 mr-2"></i> Financial Instruments
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('fiat-swaps')">
+                <div class="glass-card" onclick="openModal('fiat-swaps')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.jpg') center/cover no-repeat;">
                     <div class="service-icon text-green-400"><i class="fas fa-exchange-alt"></i></div>
                     <div class="service-title">Fiat Swaps</div>
                     <div class="service-desc">USD, EUR, AED, SAR</div>
                 </div>
-                <div class="glass-card" onclick="openModal('stocks')">
+                <div class="glass-card" onclick="openModal('stocks')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-chart-pie"></i></div>
                     <div class="service-title">Stocks &amp; ETFs</div>
                     <div class="service-desc">Global markets</div>
                 </div>
-                <div class="glass-card" onclick="openModal('shariah')">
+                <div class="glass-card" onclick="openModal('shariah')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.jpg') center/cover no-repeat;">
                     <div class="service-icon text-emerald-400"><i class="fas fa-mosque"></i></div>
                     <div class="service-title">Shariah-Compliant</div>
                     <div class="service-desc">Sukuk, Islamic funds</div>
                 </div>
-                <div class="glass-card" onclick="openModal('usmtpay')">
+                <div class="glass-card" onclick="openModal('usmtpay')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.jpg') center/cover no-repeat;">
                     <div class="service-icon text-cyan-400"><i class="fas fa-university"></i></div>
                     <div class="service-title">USMTPAY + BANK</div>
                     <div class="service-desc">Decentralized banking</div>
@@ -654,22 +654,22 @@
                 <i class="fas fa-robot text-blue-400 mr-2"></i> AI &amp; Technology
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('ai-trade')">
+                <div class="glass-card" onclick="openModal('ai-trade')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
                     <div class="service-icon text-blue-400"><i class="fas fa-robot"></i></div>
                     <div class="service-title">AI Trading</div>
                     <div class="service-desc">Smart algorithms</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-portfolio')">
+                <div class="glass-card" onclick="openModal('ai-portfolio')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
                     <div class="service-icon text-indigo-400"><i class="fas fa-chart-line"></i></div>
                     <div class="service-title">AI Portfolio</div>
                     <div class="service-desc">Automated management</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-predictions')">
+                <div class="glass-card" onclick="openModal('ai-predictions')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
                     <div class="service-icon text-sky-400"><i class="fas fa-brain"></i></div>
                     <div class="service-title">AI Predictions</div>
                     <div class="service-desc">Market forecasting</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-assistant')">
+                <div class="glass-card" onclick="openModal('ai-assistant')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-comment-dots"></i></div>
                     <div class="service-title">AI Assistant</div>
                     <div class="service-desc">24/7 support</div>
@@ -683,22 +683,22 @@
                 <i class="fas fa-credit-card text-green-400 mr-2"></i> Payments &amp; Banking
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('virtual-card')">
+                <div class="glass-card" onclick="openModal('virtual-card')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.jpg') center/cover no-repeat;">
                     <div class="service-icon text-green-400"><i class="fas fa-credit-card"></i></div>
                     <div class="service-title">Virtual Cards</div>
                     <div class="service-desc">Instant issuance</div>
                 </div>
-                <div class="glass-card" onclick="openModal('api-key')">
+                <div class="glass-card" onclick="openModal('api-key')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.jpg') center/cover no-repeat;">
                     <div class="service-icon text-cyan-400"><i class="fas fa-code"></i></div>
                     <div class="service-title">API Banking</div>
                     <div class="service-desc">REST API access</div>
                 </div>
-                <div class="glass-card" onclick="openModal('cross-border')">
+                <div class="glass-card" onclick="openModal('cross-border')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.jpg') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-globe"></i></div>
                     <div class="service-title">Cross-Border</div>
                     <div class="service-desc">Global payments</div>
                 </div>
-                <div class="glass-card" onclick="openModal('merchant')">
+                <div class="glass-card" onclick="openModal('merchant')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.jpg') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-store"></i></div>
                     <div class="service-title">Merchant Solutions</div>
                     <div class="service-desc">Payment gateway</div>
@@ -712,22 +712,22 @@
                 <i class="fas fa-crown text-yellow-400 mr-2"></i> Lifestyle &amp; Luxury
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('concierge')">
+                <div class="glass-card" onclick="openModal('concierge')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-amber-400"><i class="fas fa-concierge-bell"></i></div>
                     <div class="service-title">Concierge</div>
                     <div class="service-desc">24/7 luxury service</div>
                 </div>
-                <div class="glass-card" onclick="openModal('art')">
+                <div class="glass-card" onclick="openModal('art')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-pink-400"><i class="fas fa-palette"></i></div>
                     <div class="service-title">Art &amp; Collectibles</div>
                     <div class="service-desc">Invest in masterpieces</div>
                 </div>
-                <div class="glass-card" onclick="openModal('events')">
+                <div class="glass-card" onclick="openModal('events')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-red-400"><i class="fas fa-calendar-alt"></i></div>
                     <div class="service-title">Private Events</div>
                     <div class="service-desc">Exclusive experiences</div>
                 </div>
-                <div class="glass-card" onclick="openModal('travel')">
+                <div class="glass-card" onclick="openModal('travel')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
                     <div class="service-icon text-teal-400"><i class="fas fa-umbrella-beach"></i></div>
                     <div class="service-title">Luxury Travel</div>
                     <div class="service-desc">5-star experiences</div>
@@ -798,6 +798,7 @@
 
     <!-- ============================================================ -->
     <!-- ===== JAVASCRIPT ===== -->
+    <!-- ============================================================ -->
     <script>
         (function() {
             'use strict';
@@ -806,7 +807,7 @@
             // ===== USMT TOKEN CONFIG =====
             // ============================================================
             const USMT_CONFIG = {
-                mintAddress: '8xR5k5d4xR5k5d4xR5k5d4xR5k5d4xR5k5', // Заменить на реальный
+                mintAddress: '8xR5k5d4xR5k5d4xR5k5d4xR5k5d4xR5k5',
                 decimals: 9,
                 symbol: 'USMT',
                 name: 'Unified Solana Token',
@@ -833,9 +834,6 @@
             let usmtPrice = USMT_CONFIG.price;
             let cardBalance = 0;
 
-            // ============================================================
-            // ===== SOLANA CONNECTION =====
-            // ============================================================
             const connection = new solanaWeb3.Connection(
                 'https://api.mainnet-beta.solana.com',
                 'confirmed'
@@ -847,8 +845,6 @@
             async function getUSMTBalance(address) {
                 if (!address) return 0;
                 try {
-                    // В реальном проекте: запрос к SPL-токену
-                    // Имитация для демо
                     const fakeBalance = (Math.random() * 5000 + 100);
                     return fakeBalance;
                 } catch (error) {
@@ -862,7 +858,6 @@
             // ============================================================
             async function getUSMTPrice() {
                 try {
-                    // Имитация для демо
                     const price = 0.25 + (Math.random() * 0.02 - 0.01);
                     return price;
                 } catch (error) {
@@ -871,7 +866,7 @@
             }
 
             // ============================================================
-            // ===== UPDATE BALANCE =====
+            // ===== UPDATE BALANCE (CARD = 30% OF TOTAL) =====
             // ============================================================
             async function updateBalance() {
                 if (!walletAddress) return;
@@ -884,9 +879,13 @@
                 balanceSpan.innerText = usmtBalance.toFixed(3);
                 balanceUSDSpan.innerText = '$' + usdBalance.toFixed(2);
 
-                cardBalance = usdBalance;
-                cardBalanceSpan.innerText = '$' + usdBalance.toFixed(2);
-                cardUSMTSpan.innerText = usmtBalance.toFixed(3) + ' USMT';
+                // ===== ВИРТУАЛЬНАЯ КАРТА: 30% ОТ ОБЩЕГО БАЛАНСА =====
+                const cardPercent = 0.3;
+                const cardUsdBalance = usdBalance * cardPercent;
+                const cardUsmtBalance = usmtBalance * cardPercent;
+
+                cardBalanceSpan.innerText = '$' + cardUsdBalance.toFixed(2);
+                cardUSMTSpan.innerText = cardUsmtBalance.toFixed(3) + ' USMT';
 
                 if (!cardNumberSpan.innerText.includes('****')) {
                     const last4 = Math.floor(1000 + Math.random() * 9000);
@@ -896,7 +895,7 @@
                 document.getElementById('livePrice').innerText = '$' + usmtPrice.toFixed(4);
                 document.getElementById('displayPrice').innerText = '$' + usmtPrice.toFixed(2);
 
-                if (usdBalance > 10) {
+                if (cardUsdBalance > 10) {
                     document.getElementById('cardStatus').innerHTML = '● Active <span class="text-green-400">✓</span>';
                 } else {
                     document.getElementById('cardStatus').innerHTML = '● Low balance <span class="text-yellow-400">⚠</span>';
@@ -961,7 +960,7 @@
             }
 
             // ============================================================
-            // ===== VIRTUAL CARD =====
+            // ===== VIRTUAL CARD FUNCTIONS =====
             // ============================================================
             window.topUpCard = function() {
                 if (!walletAddress) {
@@ -977,6 +976,7 @@
                         return;
                     }
                     showToast(`✅ Card topped up with ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
+                    usmtBalance -= usmtAmount;
                     updateBalance();
                 }
             };
@@ -990,11 +990,13 @@
                 const amount = prompt('💳 Enter amount to withdraw (USMT):', '50');
                 if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
                     const usmtAmount = parseFloat(amount);
-                    if (usmtAmount * usmtPrice > cardBalance) {
+                    const cardUsmtBalance = usmtBalance * 0.3;
+                    if (usmtAmount > cardUsmtBalance) {
                         showToast('⚠️ Insufficient card balance!', 'error');
                         return;
                     }
                     showToast(`✅ Withdrawn ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
+                    usmtBalance += usmtAmount;
                     updateBalance();
                 }
             };
@@ -1005,7 +1007,8 @@
                     return;
                 }
                 const last4 = cardNumberSpan.innerText.slice(-4);
-                showToast(`💳 Card: **** **** **** ${last4}\nBalance: $${cardBalance.toFixed(2)}\nUSMT: ${usmtBalance.toFixed(3)}`, 'info');
+                const cardUsmtBalance = usmtBalance * 0.3;
+                showToast(`💳 Card: **** **** **** ${last4}\nBalance: $${(cardUsmtBalance * usmtPrice).toFixed(2)}\nUSMT: ${cardUsmtBalance.toFixed(3)}`, 'info');
             };
 
             // ============================================================
@@ -1019,9 +1022,7 @@
 
                 let html = '';
 
-                // ===== ВСЕ 100+ ФУНКЦИЙ =====
                 switch (type) {
-                    // ---- BUY ----
                     case 'buy':
                         html = `
                             <h2 class="gradient-text">🟢 Buy USMT</h2>
@@ -1041,7 +1042,6 @@
                         `;
                         break;
 
-                    // ---- SELL ----
                     case 'sell':
                         html = `
                             <h2 class="gradient-text">🔴 Sell USMT</h2>
@@ -1061,7 +1061,6 @@
                         `;
                         break;
 
-                    // ---- SEND ----
                     case 'send':
                         html = `
                             <h2 class="gradient-text">📤 Send USMT</h2>
@@ -1076,7 +1075,6 @@
                         `;
                         break;
 
-                    // ---- HISTORY ----
                     case 'history':
                         html = `
                             <h2 class="gradient-text">📊 Transaction History</h2>
@@ -1099,7 +1097,6 @@
                         `;
                         break;
 
-                    // ---- GEMS ----
                     case 'gems':
                         html = `
                             <h2 class="gradient-text">💎 Gems &amp; Metals</h2>
@@ -1118,7 +1115,6 @@
                         `;
                         break;
 
-                    // ---- JETS ----
                     case 'jets':
                         html = `
                             <h2 class="gradient-text">✈️ Private Jet Charter</h2>
@@ -1138,7 +1134,6 @@
                         `;
                         break;
 
-                    // ---- YACHTS ----
                     case 'yachts':
                         html = `
                             <h2 class="gradient-text">🛥️ Superyacht Rental</h2>
@@ -1157,7 +1152,6 @@
                         `;
                         break;
 
-                    // ---- REAL ESTATE ----
                     case 'real-estate':
                         html = `
                             <h2 class="gradient-text">🏢 Real Estate</h2>
@@ -1180,7 +1174,6 @@
                         `;
                         break;
 
-                    // ---- FIAT SWAPS ----
                     case 'fiat-swaps':
                         html = `
                             <h2 class="gradient-text">🔄 Fiat Swaps</h2>
@@ -1208,7 +1201,6 @@
                         `;
                         break;
 
-                    // ---- STOCKS ----
                     case 'stocks':
                         html = `
                             <h2 class="gradient-text">📈 Stocks &amp; ETFs</h2>
@@ -1228,7 +1220,6 @@
                         `;
                         break;
 
-                    // ---- SHARIAH ----
                     case 'shariah':
                         html = `
                             <h2 class="gradient-text">🕌 Shariah-Compliant</h2>
@@ -1247,7 +1238,6 @@
                         `;
                         break;
 
-                    // ---- AI TRADE ----
                     case 'ai-trade':
                         html = `
                             <h2 class="gradient-text">🤖 AI Trading</h2>
@@ -1266,7 +1256,6 @@
                         `;
                         break;
 
-                    // ---- AI PORTFOLIO ----
                     case 'ai-portfolio':
                         html = `
                             <h2 class="gradient-text">📊 AI Portfolio</h2>
@@ -1284,7 +1273,6 @@
                         `;
                         break;
 
-                    // ---- AI PREDICTIONS ----
                     case 'ai-predictions':
                         html = `
                             <h2 class="gradient-text">🧠 AI Predictions</h2>
@@ -1307,7 +1295,6 @@
                         `;
                         break;
 
-                    // ---- AI ASSISTANT ----
                     case 'ai-assistant':
                         html = `
                             <h2 class="gradient-text">💬 AI Assistant</h2>
@@ -1320,7 +1307,6 @@
                         `;
                         break;
 
-                    // ---- VIRTUAL CARD ----
                     case 'virtual-card':
                         html = `
                             <h2 class="gradient-text">💳 Virtual Card</h2>
@@ -1340,7 +1326,6 @@
                         `;
                         break;
 
-                    // ---- API KEY ----
                     case 'api-key':
                         html = `
                             <h2 class="gradient-text">🔑 API Key</h2>
@@ -1357,7 +1342,6 @@
                         `;
                         break;
 
-                    // ---- CROSS-BORDER ----
                     case 'cross-border':
                         html = `
                             <h2 class="gradient-text">🌍 Cross-Border Payments</h2>
@@ -1382,7 +1366,6 @@
                         `;
                         break;
 
-                    // ---- MERCHANT ----
                     case 'merchant':
                         html = `
                             <h2 class="gradient-text">🏪 Merchant Solutions</h2>
@@ -1400,7 +1383,6 @@
                         `;
                         break;
 
-                    // ---- USMTPAY ----
                     case 'usmtpay':
                         html = `
                             <h2 class="gradient-text">🏦 USMTPAY + USMTBANK</h2>
@@ -1419,7 +1401,6 @@
                         `;
                         break;
 
-                    // ---- CONCIERGE ----
                     case 'concierge':
                         html = `
                             <h2 class="gradient-text">👑 Concierge Service</h2>
@@ -1438,7 +1419,6 @@
                         `;
                         break;
 
-                    // ---- ART ----
                     case 'art':
                         html = `
                             <h2 class="gradient-text">🎨 Art &amp; Collectibles</h2>
@@ -1456,7 +1436,6 @@
                         `;
                         break;
 
-                    // ---- EVENTS ----
                     case 'events':
                         html = `
                             <h2 class="gradient-text">🎉 Private Events</h2>
@@ -1475,7 +1454,6 @@
                         `;
                         break;
 
-                    // ---- TRAVEL ----
                     case 'travel':
                         html = `
                             <h2 class="gradient-text">🌴 Luxury Travel</h2>
@@ -1494,7 +1472,6 @@
                         `;
                         break;
 
-                    // ---- INSTALL WALLET ----
                     case 'install-wallet':
                         html = `
                             <h2 class="gradient-text">🦊 Phantom Wallet</h2>
@@ -1540,7 +1517,6 @@
             // ============================================================
             // ===== EXECUTE FUNCTIONS =====
             // ============================================================
-
             window.executeBuy = function() {
                 const amount = document.getElementById('buyAmount').value;
                 if (!amount || amount <= 0) {
@@ -1602,7 +1578,6 @@
                 }, 3000);
             };
 
-            // ---- GEMS ----
             window.executeGemTrade = function() {
                 const type = document.getElementById('gemType');
                 const amount = document.getElementById('gemAmount').value;
@@ -1618,7 +1593,6 @@
                 `, 'success');
             };
 
-            // ---- JETS ----
             window.executeJetBooking = function() {
                 const jet = document.getElementById('jetType');
                 const route = document.getElementById('jetRoute').value || 'NYC → London';
@@ -1631,7 +1605,6 @@
                 `, 'success');
             };
 
-            // ---- YACHTS ----
             window.executeYachtBooking = function() {
                 const yacht = document.getElementById('yachtType');
                 const dest = document.getElementById('yachtDestination').value || 'Dubai';
@@ -1644,7 +1617,6 @@
                 `, 'success');
             };
 
-            // ---- REAL ESTATE ----
             window.executeRealEstate = function() {
                 const loc = document.getElementById('reLocation');
                 const type = document.getElementById('reType');
@@ -1656,7 +1628,6 @@
                 `, 'success');
             };
 
-            // ---- FIAT SWAPS ----
             window.executeFiatSwap = function() {
                 const from = document.getElementById('fiatFrom');
                 const to = document.getElementById('fiatTo');
@@ -1669,7 +1640,6 @@
                 `, 'success');
             };
 
-            // ---- STOCKS ----
             window.executeStockTrade = function() {
                 const sym = document.getElementById('stockSymbol');
                 const shares = document.getElementById('stockAmount').value || '10';
@@ -1681,7 +1651,6 @@
                 `, 'success');
             };
 
-            // ---- SHARIAH ----
             window.executeShariah = function() {
                 const type = document.getElementById('shariahType');
                 const amount = document.getElementById('shariahAmount').value || '1000';
@@ -1693,7 +1662,6 @@
                 `, 'success');
             };
 
-            // ---- AI TRADE ----
             window.executeAITrade = function() {
                 const mode = document.getElementById('aiMode');
                 const amount = document.getElementById('aiAmount').value || '500';
@@ -1706,7 +1674,6 @@
                 `, 'success');
             };
 
-            // ---- AI PORTFOLIO ----
             window.executeAIPortfolio = function() {
                 const risk = document.getElementById('portfolioRisk');
                 const amount = document.getElementById('portfolioAmount').value || '1000';
@@ -1718,7 +1685,6 @@
                 `, 'success');
             };
 
-            // ---- AI PREDICTIONS ----
             window.executeAIPrediction = function() {
                 const pair = document.getElementById('predictionPair');
                 const time = document.getElementById('predictionTime');
@@ -1732,7 +1698,6 @@
                 `, 'success');
             };
 
-            // ---- AI ASSISTANT ----
             window.executeAIAssistant = function() {
                 const question = document.getElementById('aiQuestion').value || 'Help me with USMT';
                 const responses = [
@@ -1748,7 +1713,6 @@
                 `, 'success');
             };
 
-            // ---- VIRTUAL CARD ----
             window.executeVirtualCard = function() {
                 const currency = document.getElementById('cardCurrency').value;
                 const name = document.getElementById('cardName').value || 'USMT User';
@@ -1761,7 +1725,6 @@
                 `, 'success');
             };
 
-            // ---- API KEY ----
             window.executeApiKey = function() {
                 const perms = document.getElementById('apiPermissions').value;
                 const key = 'usmt_' + Math.random().toString(36).substring(2, 12) + '_' + Math.random().toString(36).substring(2, 8);
@@ -1772,7 +1735,6 @@
                 `, 'success');
             };
 
-            // ---- CROSS-BORDER ----
             window.executeCrossBorder = function() {
                 const from = document.getElementById('cbFrom');
                 const to = document.getElementById('cbTo');
@@ -1786,7 +1748,6 @@
                 `, 'success');
             };
 
-            // ---- MERCHANT ----
             window.executeMerchant = function() {
                 const type = document.getElementById('merchantType');
                 const site = document.getElementById('merchantSite').value || 'yourstore.com';
@@ -1798,7 +1759,6 @@
                 `, 'success');
             };
 
-            // ---- BANK ----
             window.executeBank = function() {
                 const service = document.getElementById('bankService');
                 const amount = document.getElementById('bankAmount').value || '1000';
@@ -1809,7 +1769,6 @@
                 `, 'success');
             };
 
-            // ---- CONCIERGE ----
             window.executeConcierge = function() {
                 const type = document.getElementById('conciergeType');
                 const request = document.getElementById('conciergeRequest').value || 'Restaurant booking';
@@ -1821,7 +1780,6 @@
                 `, 'success');
             };
 
-            // ---- ART ----
             window.executeArt = function() {
                 const type = document.getElementById('artType');
                 showResult('artResult', `
@@ -1832,7 +1790,6 @@
                 `, 'success');
             };
 
-            // ---- EVENTS ----
             window.executeEvents = function() {
                 const type = document.getElementById('eventType');
                 const guests = document.getElementById('eventGuests').value || '50';
@@ -1844,7 +1801,6 @@
                 `, 'success');
             };
 
-            // ---- TRAVEL ----
             window.executeTravel = function() {
                 const type = document.getElementById('travelType');
                 const dest = document.getElementById('travelDestination').value || 'Maldives';
@@ -1856,7 +1812,6 @@
                 `, 'success');
             };
 
-            // ---- RESULT HELPER ----
             function showResult(elementId, html, type) {
                 const el = document.getElementById(elementId);
                 if (!el) return;
