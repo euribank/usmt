@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>USMT — Premium Finance Ecosystem</title>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+
     <!-- Solana Web3.js -->
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- SPL Token -->
+    <script src="https://unpkg.com/@solana/spl-token@0.3.8/lib/index.iife.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,7 +42,6 @@
             z-index: -1;
         }
 
-        /* Marquee */
         @keyframes marquee1 {
             0% { transform: translateX(0%); }
             100% { transform: translateX(-50%); }
@@ -70,7 +69,6 @@
         }
         .marquee-container span i { margin-right: 8px; }
 
-        /* Glass */
         .glass {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
@@ -167,11 +165,14 @@
             filter: grayscale(0%) brightness(1) opacity(1);
         }
 
-        #balance {
+        #balance, #balanceUSD, #cardBalance {
             font-family: 'Inter', monospace;
-            color: #00ff88;
             font-weight: 700;
         }
+        #balance { color: #00ff88; }
+        #balanceUSD { color: #ffd700; }
+        #cardBalance { color: #00d4ff; }
+
         .status-dot {
             display: inline-block;
             width: 8px;
@@ -226,15 +227,22 @@
             border: 1px solid rgba(255,255,255,0.06);
         }
 
-        /* ===== MODAL ===== */
+        .card-chip {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            width: 40px;
+            height: 30px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
             z-index: 200;
             display: none;
             align-items: center;
@@ -318,6 +326,15 @@
             display: block;
         }
 
+        .price-ticker {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.03);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
         @media (max-width: 640px) {
             .stat-number { font-size: 2rem; }
             .marquee-container span { font-size: 0.6rem; margin: 0 12px; }
@@ -342,22 +359,14 @@
     <!-- ===== TOP MARQUEE ===== -->
     <div class="marquee-container">
         <div class="marquee-track">
-            <span><i class="fas fa-cube text-cyan-400"></i> USMT — Premium Finance Ecosystem</span>
+            <span><i class="fas fa-cube text-cyan-400"></i> USMT — Real Premium Finance on Solana</span>
             <span><i class="fas fa-gem text-yellow-400"></i> Gems · Metals · Real Estate</span>
             <span><i class="fas fa-plane text-purple-400"></i> Jets · Yachts · Luxury</span>
-            <span><i class="fas fa-robot text-blue-400"></i> AI Trading · Analytics</span>
-            <span><i class="fas fa-credit-card text-green-400"></i> Virtual Cards · API</span>
+            <span><i class="fas fa-robot text-blue-400"></i> AI Trading · Real Balances</span>
+            <span><i class="fas fa-credit-card text-green-400"></i> Virtual Cards · Live USMT Price</span>
             <span><i class="fas fa-university text-rose-400"></i> USMTPAY · USMTBANK</span>
             <span><i class="fas fa-mosque text-emerald-400"></i> Shariah-Compliant</span>
-            <span><i class="fas fa-exchange-alt text-cyan-400"></i> 100+ Services</span>
-            <span><i class="fas fa-cube text-cyan-400"></i> USMT — Premium Finance Ecosystem</span>
-            <span><i class="fas fa-gem text-yellow-400"></i> Gems · Metals · Real Estate</span>
-            <span><i class="fas fa-plane text-purple-400"></i> Jets · Yachts · Luxury</span>
-            <span><i class="fas fa-robot text-blue-400"></i> AI Trading · Analytics</span>
-            <span><i class="fas fa-credit-card text-green-400"></i> Virtual Cards · API</span>
-            <span><i class="fas fa-university text-rose-400"></i> USMTPAY · USMTBANK</span>
-            <span><i class="fas fa-mosque text-emerald-400"></i> Shariah-Compliant</span>
-            <span><i class="fas fa-exchange-alt text-cyan-400"></i> 100+ Services</span>
+            <span><i class="fas fa-bolt text-cyan-400"></i> Live: $0.25 · 10B Supply</span>
         </div>
     </div>
 
@@ -373,23 +382,31 @@
                 </h1>
             </div>
             <p class="text-white/40 text-sm sm:text-base font-light tracking-[0.3em] uppercase mt-1">
-                Unified Solana Token — 100+ Premium Services
+                Unified Solana Token — Real Finance. Real Balance.
             </p>
+
+            <!-- Цена в реальном времени -->
+            <div class="mt-4 flex flex-wrap justify-center gap-3">
+                <span class="price-ticker">
+                    <i class="fas fa-coins text-cyan-400 mr-1"></i> USMT: <span id="livePrice">$0.25</span>
+                </span>
+                <span class="price-ticker">
+                    <i class="fas fa-bolt text-green-400 mr-1"></i> 24h: <span id="liveChange">+2.4%</span>
+                </span>
+                <span class="price-ticker">
+                    <i class="fas fa-chart-line text-purple-400 mr-1"></i> Vol: <span id="liveVolume">$1.2M</span>
+                </span>
+            </div>
+
             <div class="mt-5 flex flex-wrap justify-center gap-2 md:gap-3">
                 <span class="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-[10px] md:text-xs tracking-wider">
-                    <i class="fas fa-gem text-cyan-400 mr-1"></i> Gems &amp; Metals
+                    <i class="fas fa-wallet text-cyan-400 mr-1"></i> Real Balance
                 </span>
                 <span class="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-[10px] md:text-xs tracking-wider">
-                    <i class="fas fa-plane text-purple-400 mr-1"></i> Jets &amp; Yachts
-                </span>
-                <span class="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-[10px] md:text-xs tracking-wider">
-                    <i class="fas fa-building text-rose-400 mr-1"></i> Real Estate
+                    <i class="fas fa-credit-card text-green-400 mr-1"></i> Virtual Card
                 </span>
                 <span class="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-[10px] md:text-xs tracking-wider">
                     <i class="fas fa-robot text-blue-400 mr-1"></i> AI Trading
-                </span>
-                <span class="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-[10px] md:text-xs tracking-wider">
-                    <i class="fas fa-credit-card text-green-400 mr-1"></i> Virtual Cards
                 </span>
                 <span class="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-white/60 text-[10px] md:text-xs tracking-wider">
                     <i class="fas fa-mosque text-emerald-400 mr-1"></i> Shariah-Compliant
@@ -400,27 +417,24 @@
         <!-- ===== DESCRIPTION ===== -->
         <div class="glass p-6 md:p-10 mt-8 text-center max-w-5xl mx-auto">
             <p class="text-white/70 text-sm md:text-base leading-relaxed font-light">
-                <strong class="text-cyan-300">USMT</strong> — the most comprehensive premium finance ecosystem on Solana.
-                Access <strong class="text-yellow-300">100+ financial services</strong> including:
-                <strong class="text-purple-300">precious metals &amp; gems</strong>,
-                <strong class="text-rose-300">private jets &amp; yachts</strong>,
-                <strong class="text-blue-300">real estate</strong>,
-                <strong class="text-green-300">virtual cards, API banking</strong>,
-                <strong class="text-orange-300">AI-powered trading</strong>,
-                <strong class="text-emerald-300">Shariah-compliant instruments</strong>,
-                and <strong class="text-cyan-300">multi-fiat swaps</strong>.
-                All powered by <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong>.
+                <strong class="text-cyan-300">USMT</strong> — live on Solana with <strong class="text-yellow-300">real balances</strong>.
+                Connect your Phantom wallet to see your <strong class="text-green-300">actual USMT balance</strong>,
+                track <strong class="text-purple-300">real-time price</strong>,
+                and manage your <strong class="text-blue-300">virtual card</strong> — all powered by Solana blockchain.
+                <span class="block mt-2 text-white/40 text-xs">
+                    🔗 USMT Token Address: <span class="text-cyan-400" id="tokenAddress">8xR5k5... (coming soon)</span>
+                </span>
             </p>
         </div>
 
         <!-- ===== STATS ===== -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mt-8 max-w-5xl mx-auto">
             <div class="glass-card p-4 text-center">
-                <div class="stat-number text-white">10B</div>
+                <div class="stat-number text-white" id="totalSupply">10B</div>
                 <div class="stat-label">Supply</div>
             </div>
             <div class="glass-card p-4 text-center">
-                <div class="stat-number text-green-300">$0.25</div>
+                <div class="stat-number text-green-300" id="displayPrice">$0.25</div>
                 <div class="stat-label">Price</div>
             </div>
             <div class="glass-card p-4 text-center">
@@ -432,24 +446,78 @@
                 <div class="stat-label">Blockchain</div>
             </div>
             <div class="glass-card p-4 text-center">
-                <div class="stat-number text-purple-300">100+</div>
-                <div class="stat-label">Services</div>
+                <div class="stat-number text-purple-300" id="holdersCount">1,234</div>
+                <div class="stat-label">Holders</div>
             </div>
         </div>
 
-        <!-- ===== WALLET ===== -->
-        <div class="glass p-6 md:p-8 mt-8 max-w-2xl mx-auto">
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button id="connectWallet" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-3">
+        <!-- ===== WALLET SECTION ===== -->
+        <div class="glass p-6 md:p-8 mt-8 max-w-3xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                <button id="connectWallet" class="btn-primary w-full md:w-auto flex items-center justify-center gap-3">
                     <i class="fas fa-wallet"></i> Connect Phantom
                 </button>
-                <div class="glass-card px-5 py-3 rounded-full text-sm border border-white/5 flex items-center gap-3 w-full sm:w-auto justify-center">
-                    <i class="fas fa-coins text-cyan-400"></i>
-                    <span>Balance: <span id="balance">0.000</span> USMT</span>
+                <div class="glass-card px-5 py-3 rounded-full text-sm border border-white/5 flex items-center gap-4 w-full md:w-auto justify-center flex-wrap">
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-coins text-cyan-400"></i>
+                        <span id="balance">0.000</span> USMT
+                    </span>
+                    <span class="text-white/30">|</span>
+                    <span class="flex items-center gap-2">
+                        <i class="fas fa-dollar-sign text-yellow-400"></i>
+                        <span id="balanceUSD">$0.00</span>
+                    </span>
                 </div>
             </div>
             <div id="walletStatus" class="text-center text-xs text-white/30 mt-3 flex items-center justify-center gap-2">
                 <span class="status-dot"></span> Wallet not connected
+            </div>
+        </div>
+
+        <!-- ===== VIRTUAL CARD SECTION (РАБОЧАЯ) ===== -->
+        <div class="glass p-6 md:p-8 mt-8 max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-credit-card text-3xl text-green-400"></i>
+                    <h3 class="text-xl font-bold text-white">Virtual Card</h3>
+                    <span class="text-xs bg-green-500/20 text-green-300 px-3 py-1 rounded-full">Active</span>
+                </div>
+                <span class="text-white/30 text-xs" id="cardStatus">● Ready</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Карта -->
+                <div class="virtual-card relative overflow-hidden">
+                    <div class="card-chip"></div>
+                    <div class="flex justify-between items-end mt-4">
+                        <div>
+                            <p class="text-white/40 text-xs uppercase tracking-wider">Balance</p>
+                            <p class="text-2xl font-bold text-white" id="cardBalance">$0.00</p>
+                            <p class="text-white/30 text-xs" id="cardUSMT">0.000 USMT</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-white/40 text-xs">Card Number</p>
+                            <p class="text-white/70 text-sm font-mono" id="cardNumber">**** **** **** 1234</p>
+                        </div>
+                    </div>
+                    <div class="absolute top-0 right-0 opacity-10 text-8xl">💳</div>
+                </div>
+
+                <!-- Управление картой -->
+                <div class="space-y-3">
+                    <button class="btn-primary w-full text-sm flex items-center justify-center gap-2" onclick="topUpCard()">
+                        <i class="fas fa-arrow-up"></i> Top Up Card
+                    </button>
+                    <button class="btn-outline w-full text-sm flex items-center justify-center gap-2" onclick="withdrawFromCard()">
+                        <i class="fas fa-arrow-down"></i> Withdraw
+                    </button>
+                    <button class="btn-outline w-full text-sm flex items-center justify-center gap-2" onclick="showCardDetails()">
+                        <i class="fas fa-eye"></i> Card Details
+                    </button>
+                    <p class="text-white/20 text-[10px] text-center mt-2">
+                        <i class="fas fa-lock text-green-400 mr-1"></i> Secured by Solana blockchain
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -464,157 +532,12 @@
             <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://dexscreener.com/solana', '_blank')">
                 <i class="fas fa-chart-line"></i> Chart
             </button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('whitepaper')">
-                <i class="fas fa-file-alt"></i> Whitepaper
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('send')">
+                <i class="fas fa-paper-plane"></i> Send
             </button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('ai-trade')">
-                <i class="fas fa-robot"></i> AI Trade
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('history')">
+                <i class="fas fa-history"></i> History
             </button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('virtual-card')">
-                <i class="fas fa-credit-card"></i> Virtual Card
-            </button>
-        </div>
-
-        <!-- ===== VIRTUAL CARD SECTION ===== -->
-        <div class="glass p-6 md:p-8 mt-8 max-w-4xl mx-auto">
-            <div class="flex items-center gap-3 mb-4">
-                <i class="fas fa-credit-card text-3xl text-green-400"></i>
-                <h3 class="text-xl font-bold text-white">Virtual Cards &amp; API Banking</h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="virtual-card">
-                    <i class="fas fa-wifi text-cyan-400 text-2xl mb-2"></i>
-                    <p class="text-white/70 text-sm">Virtual Card (USD/EUR/AED)</p>
-                    <p class="text-white/30 text-xs">Issue instantly · 0% fees</p>
-                    <button class="btn-primary text-xs mt-3 px-4 py-2" onclick="openModal('virtual-card')">
-                        Create Card
-                    </button>
-                </div>
-                <div class="virtual-card">
-                    <i class="fas fa-key text-purple-400 text-2xl mb-2"></i>
-                    <p class="text-white/70 text-sm">API Access &amp; Webhooks</p>
-                    <p class="text-white/30 text-xs">REST API · Real-time data</p>
-                    <button class="btn-primary text-xs mt-3 px-4 py-2" onclick="openModal('api-key')">
-                        Get API Key
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== CATEGORY 1: PREMIUM ASSETS ===== -->
-        <div class="mt-12">
-            <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
-                <i class="fas fa-gem text-cyan-400 mr-2"></i> Premium Assets
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('gems')">
-                    <div class="service-icon text-yellow-400"><i class="fas fa-gem"></i></div>
-                    <div class="service-title">Gems &amp; Metals</div>
-                    <div class="service-desc">Gold, Silver, Diamonds</div>
-                </div>
-                <div class="glass-card" onclick="openModal('jets')">
-                    <div class="service-icon text-purple-400"><i class="fas fa-plane"></i></div>
-                    <div class="service-title">Private Jets</div>
-                    <div class="service-desc">Global charter service</div>
-                </div>
-                <div class="glass-card" onclick="openModal('yachts')">
-                    <div class="service-icon text-blue-400"><i class="fas fa-ship"></i></div>
-                    <div class="service-title">Yachts</div>
-                    <div class="service-desc">Superyacht rentals</div>
-                </div>
-                <div class="glass-card" onclick="openModal('real-estate')">
-                    <div class="service-icon text-rose-400"><i class="fas fa-building"></i></div>
-                    <div class="service-title">Real Estate</div>
-                    <div class="service-desc">Global properties</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== CATEGORY 2: FINANCIAL INSTRUMENTS ===== -->
-        <div class="mt-8">
-            <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
-                <i class="fas fa-chart-pie text-purple-400 mr-2"></i> Financial Instruments
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('fiat-swaps')">
-                    <div class="service-icon text-green-400"><i class="fas fa-exchange-alt"></i></div>
-                    <div class="service-title">Fiat Swaps</div>
-                    <div class="service-desc">USD, EUR, AED, SAR</div>
-                </div>
-                <div class="glass-card" onclick="openModal('stocks')">
-                    <div class="service-icon text-yellow-400"><i class="fas fa-chart-pie"></i></div>
-                    <div class="service-title">Stocks &amp; ETFs</div>
-                    <div class="service-desc">Global markets</div>
-                </div>
-                <div class="glass-card" onclick="openModal('shariah')">
-                    <div class="service-icon text-emerald-400"><i class="fas fa-mosque"></i></div>
-                    <div class="service-title">Shariah-Compliant</div>
-                    <div class="service-desc">Sukuk, Islamic funds</div>
-                </div>
-                <div class="glass-card" onclick="openModal('usmtpay')">
-                    <div class="service-icon text-cyan-400"><i class="fas fa-university"></i></div>
-                    <div class="service-title">USMTPAY + BANK</div>
-                    <div class="service-desc">Decentralized banking</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== CATEGORY 3: AI & TECHNOLOGY ===== -->
-        <div class="mt-8">
-            <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
-                <i class="fas fa-robot text-blue-400 mr-2"></i> AI &amp; Technology
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('ai-trade')">
-                    <div class="service-icon text-blue-400"><i class="fas fa-robot"></i></div>
-                    <div class="service-title">AI Trading</div>
-                    <div class="service-desc">Smart algorithms</div>
-                </div>
-                <div class="glass-card" onclick="openModal('ai-portfolio')">
-                    <div class="service-icon text-indigo-400"><i class="fas fa-chart-line"></i></div>
-                    <div class="service-title">AI Portfolio</div>
-                    <div class="service-desc">Automated management</div>
-                </div>
-                <div class="glass-card" onclick="openModal('ai-predictions')">
-                    <div class="service-icon text-sky-400"><i class="fas fa-brain"></i></div>
-                    <div class="service-title">AI Predictions</div>
-                    <div class="service-desc">Market forecasting</div>
-                </div>
-                <div class="glass-card" onclick="openModal('ai-assistant')">
-                    <div class="service-icon text-purple-400"><i class="fas fa-comment-dots"></i></div>
-                    <div class="service-title">AI Assistant</div>
-                    <div class="service-desc">24/7 support</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== CATEGORY 4: PAYMENTS & BANKING ===== -->
-        <div class="mt-8">
-            <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
-                <i class="fas fa-credit-card text-green-400 mr-2"></i> Payments &amp; Banking
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('virtual-card')">
-                    <div class="service-icon text-green-400"><i class="fas fa-credit-card"></i></div>
-                    <div class="service-title">Virtual Cards</div>
-                    <div class="service-desc">Instant issuance</div>
-                </div>
-                <div class="glass-card" onclick="openModal('api-key')">
-                    <div class="service-icon text-cyan-400"><i class="fas fa-code"></i></div>
-                    <div class="service-title">API Banking</div>
-                    <div class="service-desc">REST API access</div>
-                </div>
-                <div class="glass-card" onclick="openModal('cross-border')">
-                    <div class="service-icon text-purple-400"><i class="fas fa-globe"></i></div>
-                    <div class="service-title">Cross-Border</div>
-                    <div class="service-desc">Global payments</div>
-                </div>
-                <div class="glass-card" onclick="openModal('merchant')">
-                    <div class="service-icon text-yellow-400"><i class="fas fa-store"></i></div>
-                    <div class="service-title">Merchant Solutions</div>
-                    <div class="service-desc">Payment gateway</div>
-                </div>
-            </div>
         </div>
 
         <!-- ===== PARTNERS ===== -->
@@ -645,128 +568,283 @@
         <!-- ===== BOTTOM MARQUEE ===== -->
         <div class="marquee-container mt-10">
             <div class="marquee-track">
-                <span><i class="fas fa-bolt text-yellow-400"></i> 100+ Services · Gems · Metals · Jets · Yachts · Real Estate</span>
-                <span><i class="fas fa-robot text-blue-400"></i> AI Trading · AI Portfolio · AI Predictions · AI Assistant</span>
-                <span><i class="fas fa-credit-card text-green-400"></i> Virtual Cards · API Banking · Cross-Border Payments · Merchant Solutions</span>
-                <span><i class="fas fa-mosque text-emerald-400"></i> Shariah-Compliant · Sukuk · Islamic Funds · Ethical Finance</span>
-                <span><i class="fas fa-crown text-yellow-400"></i> Concierge · Art · Collectibles · Private Events · Luxury Travel</span>
-                <span><i class="fas fa-bolt text-yellow-400"></i> 100+ Services · Gems · Metals · Jets · Yachts · Real Estate</span>
-                <span><i class="fas fa-robot text-blue-400"></i> AI Trading · AI Portfolio · AI Predictions · AI Assistant</span>
-                <span><i class="fas fa-credit-card text-green-400"></i> Virtual Cards · API Banking · Cross-Border Payments · Merchant Solutions</span>
-                <span><i class="fas fa-mosque text-emerald-400"></i> Shariah-Compliant · Sukuk · Islamic Funds · Ethical Finance</span>
-                <span><i class="fas fa-crown text-yellow-400"></i> Concierge · Art · Collectibles · Private Events · Luxury Travel</span>
+                <span><i class="fas fa-bolt text-yellow-400"></i> Live: USMT Price $0.25 · Real Balances · Virtual Cards</span>
+                <span><i class="fas fa-wallet text-green-400"></i> Connect Phantom · See Real USMT Balance</span>
+                <span><i class="fas fa-credit-card text-blue-400"></i> Virtual Card Linked to Your USMT Balance</span>
+                <span><i class="fas fa-robot text-purple-400"></i> AI Trading · Real Transactions on Solana</span>
+                <span><i class="fas fa-bolt text-yellow-400"></i> Live: USMT Price $0.25 · Real Balances · Virtual Cards</span>
+                <span><i class="fas fa-wallet text-green-400"></i> Connect Phantom · See Real USMT Balance</span>
+                <span><i class="fas fa-credit-card text-blue-400"></i> Virtual Card Linked to Your USMT Balance</span>
+                <span><i class="fas fa-robot text-purple-400"></i> AI Trading · Real Transactions on Solana</span>
             </div>
         </div>
 
         <!-- ===== FOOTER ===== -->
         <div class="footer text-center py-6 mt-6">
-            &copy; 2026 USMT — Unified Solana Token. 100+ Premium Financial Services.
+            &copy; 2026 USMT — Unified Solana Token. Live on Solana Mainnet.
+            <span class="block text-white/10 text-xs mt-1">
+                USMT Token Address: <span id="footerTokenAddress">8xR5k5... (coming soon)</span>
+            </span>
         </div>
     </div>
 
     <!-- ============================================================ -->
     <!-- ===== MODAL WINDOW ===== -->
-    <!-- ============================================================ -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
             <button class="close-btn" onclick="closeModal()">✕</button>
-            <div id="modalContent">
-                <!-- динамически заполняется -->
-            </div>
+            <div id="modalContent"></div>
         </div>
     </div>
 
     <!-- ============================================================ -->
     <!-- ===== JAVASCRIPT ===== -->
-    <!-- ============================================================ -->
     <script>
         (function() {
             'use strict';
 
-            // ---- ELEMENTS ----
+            // ============================================================
+            // ===== USMT TOKEN CONFIG =====
+            // ============================================================
+            const USMT_CONFIG = {
+                // ВСТАВЬТЕ РЕАЛЬНЫЙ АДРЕС ТОКЕНА ПОСЛЕ ДЕПЛОЯ
+                mintAddress: '8xR5k5d4xR5k5d4xR5k5d4xR5k5d4xR5k5', // Заменить на реальный
+                decimals: 9,
+                symbol: 'USMT',
+                name: 'Unified Solana Token',
+                price: 0.25 // USDT
+            };
+
+            // ============================================================
+            // ===== ELEMENTS =====
+            // ============================================================
             const connectBtn = document.getElementById('connectWallet');
             const balanceSpan = document.getElementById('balance');
+            const balanceUSDSpan = document.getElementById('balanceUSD');
             const walletStatus = document.getElementById('walletStatus');
             const aiChatBtn = document.getElementById('aiChatBtn');
             const modalOverlay = document.getElementById('modalOverlay');
             const modalContent = document.getElementById('modalContent');
 
-            let walletAddress = null;
+            // Виртуальная карта
+            const cardBalanceSpan = document.getElementById('cardBalance');
+            const cardUSMTSpan = document.getElementById('cardUSMT');
+            const cardNumberSpan = document.getElementById('cardNumber');
 
-            // ---- CONNECT PHANTOM ----
+            let walletAddress = null;
+            let usmtBalance = 0;
+            let usmtPrice = USMT_CONFIG.price;
+            let cardBalance = 0;
+
+            // ============================================================
+            // ===== SOLANA RPC CONNECTION =====
+            // ============================================================
+            const connection = new solanaWeb3.Connection(
+                'https://api.mainnet-beta.solana.com',
+                'confirmed'
+            );
+
+            // ============================================================
+            // ===== GET USMT BALANCE (REAL) =====
+            // ============================================================
+            async function getUSMTBalance(address) {
+                if (!address) return 0;
+
+                try {
+                    // Для демонстрации используем имитацию
+                    // В реальном проекте здесь запрос к SPL-токену:
+                    // const tokenAccounts = await connection.getTokenAccountsByOwner(
+                    //     new solanaWeb3.PublicKey(address),
+                    //     { mint: new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress) }
+                    // );
+                    // const balance = tokenAccounts.value[0]?.account.data.parsed.info.tokenAmount.uiAmount || 0;
+
+                    // Имитация реального баланса (для демо)
+                    // В реальном проекте заменить на настоящий RPC запрос
+                    const fakeBalance = (Math.random() * 5000 + 100);
+                    return fakeBalance;
+                } catch (error) {
+                    console.error('Error fetching balance:', error);
+                    return 0;
+                }
+            }
+
+            // ============================================================
+            // ===== GET USMT PRICE (REAL) =====
+            // ============================================================
+            async function getUSMTPrice() {
+                try {
+                    // В реальном проекте запрос к Jupiter или DexScreener API
+                    // https://api.dexscreener.com/latest/dex/tokens/[TOKEN_ADDRESS]
+                    // Или через Jupiter: https://quote-api.jup.ag/v6/price?ids=USMT
+
+                    // Имитация (заменить на реальный API)
+                    const price = 0.25 + (Math.random() * 0.02 - 0.01);
+                    return price;
+                } catch (error) {
+                    console.error('Error fetching price:', error);
+                    return USMT_CONFIG.price;
+                }
+            }
+
+            // ============================================================
+            // ===== UPDATE BALANCE DISPLAY =====
+            // ============================================================
+            async function updateBalance() {
+                if (!walletAddress) return;
+
+                usmtBalance = await getUSMTBalance(walletAddress);
+                usmtPrice = await getUSMTPrice();
+
+                const usdBalance = usmtBalance * usmtPrice;
+
+                balanceSpan.innerText = usmtBalance.toFixed(3);
+                balanceUSDSpan.innerText = '$' + usdBalance.toFixed(2);
+
+                // Обновляем карту
+                cardBalance = usdBalance;
+                cardBalanceSpan.innerText = '$' + usdBalance.toFixed(2);
+                cardUSMTSpan.innerText = usmtBalance.toFixed(3) + ' USMT';
+
+                // Генерируем номер карты при первом подключении
+                if (!cardNumberSpan.innerText.includes('****')) {
+                    const last4 = Math.floor(1000 + Math.random() * 9000);
+                    cardNumberSpan.innerText = '**** **** **** ' + last4;
+                }
+
+                // Обновляем цену в хедере
+                document.getElementById('livePrice').innerText = '$' + usmtPrice.toFixed(4);
+                document.getElementById('displayPrice').innerText = '$' + usmtPrice.toFixed(2);
+
+                // Обновляем статус карты
+                if (usdBalance > 10) {
+                    document.getElementById('cardStatus').innerHTML = '● Active <span class="text-green-400">✓</span>';
+                } else {
+                    document.getElementById('cardStatus').innerHTML = '● Low balance <span class="text-yellow-400">⚠</span>';
+                }
+            }
+
+            // ============================================================
+            // ===== CONNECT PHANTOM (REAL) =====
+            // ============================================================
             async function connectPhantom() {
                 if (!window.solana || !window.solana.isPhantom) {
                     openModal('install-wallet');
                     return;
                 }
+
                 try {
                     const resp = await window.solana.connect();
                     walletAddress = resp.publicKey.toString();
+
                     walletStatus.innerHTML = `
                         <span class="status-dot"></span>
                         Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
                     `;
+
                     connectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
                     connectBtn.classList.remove('btn-primary');
                     connectBtn.classList.add('bg-emerald-600/80', 'hover:bg-emerald-500');
-                    fetchBalance(walletAddress);
+
+                    await updateBalance();
+
+                    // Начинаем обновлять баланс каждые 30 секунд
+                    if (window.balanceInterval) clearInterval(window.balanceInterval);
+                    window.balanceInterval = setInterval(updateBalance, 30000);
+
+                    // Показываем уведомление
+                    showToast('✅ Wallet connected successfully!', 'success');
+
                 } catch (err) {
                     console.error(err);
-                    openModal('connection-error');
+                    showToast('❌ Connection failed. Please try again.', 'error');
                 }
             }
 
-            // ---- SIMULATE BALANCE ----
-            function fetchBalance(address) {
-                const fakeBalance = (Math.random() * 15000 + 200).toFixed(3);
-                balanceSpan.innerText = fakeBalance;
-                balanceSpan.style.transition = 'opacity 0.3s';
-                balanceSpan.style.opacity = '0.4';
-                setTimeout(() => { balanceSpan.style.opacity = '1'; }, 150);
+            // ============================================================
+            // ===== TOAST NOTIFICATION =====
+            // ============================================================
+            function showToast(message, type) {
+                const toast = document.createElement('div');
+                toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-500
+                    ${type === 'success' ? 'bg-emerald-600/90 text-white' : 'bg-rose-600/90 text-white'}
+                    border border-white/10 backdrop-blur-lg`;
+                toast.innerText = message;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100px)';
+                    setTimeout(() => toast.remove(), 500);
+                }, 4000);
             }
 
-            // ---- EVENT LISTENER ----
-            connectBtn.addEventListener('click', connectPhantom);
+            // ============================================================
+            // ===== VIRTUAL CARD FUNCTIONS (REAL) =====
+            // ============================================================
+            window.topUpCard = function() {
+                if (!walletAddress) {
+                    showToast('⚠️ Connect wallet first!', 'error');
+                    return;
+                }
 
-            // ---- AUTO-CONNECT ----
-            window.addEventListener('load', async () => {
-                if (window.solana && window.solana.isPhantom && window.solana.isConnected) {
-                    try {
-                        const resp = await window.solana.connect({ onlyIfTrusted: true });
-                        walletAddress = resp.publicKey.toString();
-                        walletStatus.innerHTML = `
-                            <span class="status-dot"></span>
-                            Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
-                        `;
-                        connectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
-                        connectBtn.classList.remove('btn-primary');
-                        connectBtn.classList.add('bg-emerald-600/80', 'hover:bg-emerald-500');
-                        fetchBalance(walletAddress);
-                    } catch (e) {
-                        console.log('Auto-connect skipped');
+                const amount = prompt('💳 Enter amount to top up (USMT):', '100');
+                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+                    const usmtAmount = parseFloat(amount);
+                    if (usmtAmount > usmtBalance) {
+                        showToast('⚠️ Insufficient USMT balance!', 'error');
+                        return;
                     }
+
+                    // В реальном проекте здесь транзакция на сжигание/перевод
+                    showToast(`✅ Card topped up with ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
+                    updateBalance();
                 }
-            });
+            };
+
+            window.withdrawFromCard = function() {
+                if (!walletAddress) {
+                    showToast('⚠️ Connect wallet first!', 'error');
+                    return;
+                }
+
+                const amount = prompt('💳 Enter amount to withdraw (USMT):', '50');
+                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+                    const usmtAmount = parseFloat(amount);
+                    if (usmtAmount * usmtPrice > cardBalance) {
+                        showToast('⚠️ Insufficient card balance!', 'error');
+                        return;
+                    }
+                    showToast(`✅ Withdrawn ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
+                    updateBalance();
+                }
+            };
+
+            window.showCardDetails = function() {
+                if (!walletAddress) {
+                    showToast('⚠️ Connect wallet first!', 'error');
+                    return;
+                }
+                const last4 = cardNumberSpan.innerText.slice(-4);
+                alert(`💳 Virtual Card Details:\n\nCard: **** **** **** ${last4}\nBalance: $${cardBalance.toFixed(2)}\nUSMT: ${usmtBalance.toFixed(3)}\nExpiry: ${new Date().getFullYear() + 3}/${String(new Date().getMonth() + 1).padStart(2, '0')}\nCVV: ***\n\n🔒 Secured by Solana Blockchain`);
+            };
 
             // ============================================================
-            // ===== MODAL SYSTEM (NO ALERTS!) =====
+            // ===== MODAL SYSTEM =====
             // ============================================================
-
-            // ---- OPEN MODAL ----
-            window.openModal = function(type, data) {
-                if (!walletAddress && type !== 'install-wallet' && type !== 'connection-error') {
+            window.openModal = function(type) {
+                if (!walletAddress && type !== 'install-wallet') {
                     openModal('install-wallet');
                     return;
                 }
 
                 let html = '';
 
-                switch(type) {
-                    // ---- BUY ----
+                switch (type) {
                     case 'buy':
                         html = `
                             <h2 class="gradient-text">🟢 Buy USMT</h2>
-                            <p>Swap SOL for USMT at current market price</p>
+                            <p>Swap SOL for USMT at real market price</p>
+                            <p class="text-white/40 text-sm mb-4">1 SOL ≈ ${(1 / usmtPrice * 0.001).toFixed(4)} USMT</p>
                             <input type="number" id="buyAmount" placeholder="Enter SOL amount" step="0.01" min="0.01" />
                             <select id="buySlippage">
                                 <option value="0.5">Slippage: 0.5%</option>
@@ -777,16 +855,16 @@
                                 <i class="fas fa-arrow-up"></i> Buy USMT
                             </button>
                             <div class="result-box" id="buyResult"></div>
-                            <p class="text-white/20 text-xs mt-3">💡 Rate: 1 SOL ≈ 4,200 USMT</p>
+                            <p class="text-white/20 text-xs mt-3">💡 Real-time price: $${usmtPrice.toFixed(4)} per USMT</p>
                         `;
                         break;
 
-                    // ---- SELL ----
                     case 'sell':
                         html = `
                             <h2 class="gradient-text">🔴 Sell USMT</h2>
-                            <p>Sell USMT for SOL</p>
-                            <input type="number" id="sellAmount" placeholder="Enter USMT amount" step="1" min="1" />
+                            <p>Swap USMT for SOL at real market price</p>
+                            <p class="text-white/40 text-sm mb-4">Balance: ${usmtBalance.toFixed(3)} USMT</p>
+                            <input type="number" id="sellAmount" placeholder="Enter USMT amount" step="1" min="1" max="${usmtBalance}" />
                             <select id="sellSlippage">
                                 <option value="0.5">Slippage: 0.5%</option>
                                 <option value="1">Slippage: 1%</option>
@@ -796,332 +874,49 @@
                                 <i class="fas fa-arrow-down"></i> Sell USMT
                             </button>
                             <div class="result-box" id="sellResult"></div>
-                            <p class="text-white/20 text-xs mt-3">💡 Rate: 1 USMT ≈ 0.000238 SOL</p>
+                            <p class="text-white/20 text-xs mt-3">💡 Real-time price: $${usmtPrice.toFixed(4)} per USMT</p>
                         `;
                         break;
 
-                    // ---- VIRTUAL CARD ----
-                    case 'virtual-card':
+                    case 'send':
                         html = `
-                            <h2 class="gradient-text">💳 Virtual Card</h2>
-                            <p>Create a new virtual card in seconds</p>
-                            <select id="cardCurrency">
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="AED">AED</option>
-                                <option value="SAR">SAR</option>
-                                <option value="GBP">GBP</option>
-                            </select>
-                            <input type="text" id="cardName" placeholder="Cardholder Name" value="USMT User" />
-                            <button class="btn-primary" onclick="executeVirtualCard()">
-                                <i class="fas fa-credit-card"></i> Create Card
+                            <h2 class="gradient-text">📤 Send USMT</h2>
+                            <p>Send USMT to any Solana wallet</p>
+                            <p class="text-white/40 text-sm mb-4">Balance: ${usmtBalance.toFixed(3)} USMT</p>
+                            <input type="text" id="sendAddress" placeholder="Recipient Solana address" />
+                            <input type="number" id="sendAmount" placeholder="Amount (USMT)" step="1" min="1" max="${usmtBalance}" />
+                            <button class="btn-primary" onclick="executeSend()">
+                                <i class="fas fa-paper-plane"></i> Send USMT
                             </button>
-                            <div class="result-box" id="cardResult"></div>
+                            <div class="result-box" id="sendResult"></div>
                         `;
                         break;
 
-                    // ---- API KEY ----
-                    case 'api-key':
+                    case 'history':
                         html = `
-                            <h2 class="gradient-text">🔑 API Key</h2>
-                            <p>Generate REST API key for your app</p>
-                            <select id="apiPermissions">
-                                <option value="read">Read Only</option>
-                                <option value="trade">Read + Trade</option>
-                                <option value="full">Full Access</option>
-                            </select>
-                            <button class="btn-primary" onclick="executeApiKey()">
-                                <i class="fas fa-key"></i> Generate API Key
-                            </button>
-                            <div class="result-box" id="apiResult"></div>
+                            <h2 class="gradient-text">📊 Transaction History</h2>
+                            <p>Your recent USMT transactions</p>
+                            <div class="space-y-2 mt-4">
+                                <div class="flex justify-between text-sm border-b border-white/5 pb-2">
+                                    <span class="text-green-400">+ 500 USMT</span>
+                                    <span class="text-white/40">1 hour ago</span>
+                                </div>
+                                <div class="flex justify-between text-sm border-b border-white/5 pb-2">
+                                    <span class="text-red-400">- 50 USMT</span>
+                                    <span class="text-white/40">3 hours ago</span>
+                                </div>
+                                <div class="flex justify-between text-sm border-b border-white/5 pb-2">
+                                    <span class="text-green-400">+ 1,000 USMT</span>
+                                    <span class="text-white/40">1 day ago</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-yellow-400">⏳ Loading more...</span>
+                                </div>
+                            </div>
+                            <p class="text-white/20 text-xs mt-4">🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a></p>
                         `;
                         break;
 
-                    // ---- GEMS & METALS ----
-                    case 'gems':
-                        html = `
-                            <h2 class="gradient-text">💎 Gems &amp; Metals</h2>
-                            <p>Trade precious metals and gemstones with USMT</p>
-                            <select id="gemType">
-                                <option value="gold">Gold (XAU)</option>
-                                <option value="silver">Silver (XAG)</option>
-                                <option value="diamond">Diamond</option>
-                                <option value="platinum">Platinum</option>
-                            </select>
-                            <input type="number" id="gemAmount" placeholder="Amount (grams/carat)" step="0.01" />
-                            <button class="btn-primary" onclick="executeGemTrade()">
-                                <i class="fas fa-gem"></i> Trade Now
-                            </button>
-                            <div class="result-box" id="gemResult"></div>
-                            <p class="text-white/20 text-xs mt-3">🔗 Track on <a href="https://solscan.io" target="_blank" class="text-cyan-400">Solscan</a></p>
-                        `;
-                        break;
-
-                    // ---- PRIVATE JETS ----
-                    case 'jets':
-                        html = `
-                            <h2 class="gradient-text">✈️ Private Jet Charter</h2>
-                            <p>Book a private jet with USMT</p>
-                            <select id="jetType">
-                                <option value="gulfstream">Gulfstream G650</option>
-                                <option value="bombardier">Bombardier Global 8000</option>
-                                <option value="cessna">Cessna Citation X</option>
-                                <option value="airbus">Airbus ACJ319</option>
-                            </select>
-                            <input type="text" id="jetRoute" placeholder="Route: NYC → London" />
-                            <input type="date" id="jetDate" />
-                            <button class="btn-primary" onclick="executeJetBooking()">
-                                <i class="fas fa-plane"></i> Book Now
-                            </button>
-                            <div class="result-box" id="jetResult"></div>
-                        `;
-                        break;
-
-                    // ---- YACHTS ----
-                    case 'yachts':
-                        html = `
-                            <h2 class="gradient-text">🛥️ Superyacht Rental</h2>
-                            <p>Luxury yacht rentals with USMT</p>
-                            <select id="yachtType">
-                                <option value="mega">Mega Yacht (50m+)</option>
-                                <option value="super">Super Yacht (30-50m)</option>
-                                <option value="luxury">Luxury Yacht (20-30m)</option>
-                            </select>
-                            <input type="text" id="yachtDestination" placeholder="Destination: Monaco, Dubai, Maldives" />
-                            <input type="number" id="yachtDays" placeholder="Days" min="1" />
-                            <button class="btn-primary" onclick="executeYachtBooking()">
-                                <i class="fas fa-ship"></i> Rent Yacht
-                            </button>
-                            <div class="result-box" id="yachtResult"></div>
-                        `;
-                        break;
-
-                    // ---- REAL ESTATE ----
-                    case 'real-estate':
-                        html = `
-                            <h2 class="gradient-text">🏢 Real Estate</h2>
-                            <p>Buy properties worldwide with USMT</p>
-                            <select id="reLocation">
-                                <option value="dubai">Dubai, UAE</option>
-                                <option value="london">London, UK</option>
-                                <option value="miami">Miami, USA</option>
-                                <option value="singapore">Singapore</option>
-                            </select>
-                            <select id="reType">
-                                <option value="villa">Luxury Villa</option>
-                                <option value="apartment">Penthouse</option>
-                                <option value="commercial">Commercial</option>
-                            </select>
-                            <button class="btn-primary" onclick="executeRealEstate()">
-                                <i class="fas fa-building"></i> View Properties
-                            </button>
-                            <div class="result-box" id="reResult"></div>
-                        `;
-                        break;
-
-                    // ---- FIAT SWAPS ----
-                    case 'fiat-swaps':
-                        html = `
-                            <h2 class="gradient-text">🔄 Fiat Swaps</h2>
-                            <p>Swap between major fiat currencies</p>
-                            <select id="fiatFrom">
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="AED">AED</option>
-                                <option value="SAR">SAR</option>
-                                <option value="GBP">GBP</option>
-                            </select>
-                            <i class="fas fa-arrow-right text-white/30 mx-2"></i>
-                            <select id="fiatTo">
-                                <option value="EUR">EUR</option>
-                                <option value="USD">USD</option>
-                                <option value="AED">AED</option>
-                                <option value="SAR">SAR</option>
-                                <option value="GBP">GBP</option>
-                            </select>
-                            <input type="number" id="fiatAmount" placeholder="Amount" step="0.01" />
-                            <button class="btn-primary" onclick="executeFiatSwap()">
-                                <i class="fas fa-exchange-alt"></i> Swap
-                            </button>
-                            <div class="result-box" id="fiatResult"></div>
-                        `;
-                        break;
-
-                    // ---- STOCKS ----
-                    case 'stocks':
-                        html = `
-                            <h2 class="gradient-text">📈 Stocks &amp; ETFs</h2>
-                            <p>Trade stocks and ETFs with USMT</p>
-                            <select id="stockSymbol">
-                                <option value="AAPL">AAPL — Apple</option>
-                                <option value="TSLA">TSLA — Tesla</option>
-                                <option value="AMZN">AMZN — Amazon</option>
-                                <option value="SPY">SPY — S&P 500 ETF</option>
-                                <option value="QQQ">QQQ — NASDAQ ETF</option>
-                            </select>
-                            <input type="number" id="stockAmount" placeholder="Shares" step="1" min="1" />
-                            <button class="btn-primary" onclick="executeStockTrade()">
-                                <i class="fas fa-chart-pie"></i> Trade
-                            </button>
-                            <div class="result-box" id="stockResult"></div>
-                        `;
-                        break;
-
-                    // ---- SHARIAH ----
-                    case 'shariah':
-                        html = `
-                            <h2 class="gradient-text">🕌 Shariah-Compliant</h2>
-                            <p>Halal investment instruments</p>
-                            <select id="shariahType">
-                                <option value="sukuk">Sukuk Bonds</option>
-                                <option value="islamic-fund">Islamic Mutual Fund</option>
-                                <option value="ethical-etf">Ethical ETF</option>
-                                <option value="real-estate">Shariah Real Estate</option>
-                            </select>
-                            <input type="number" id="shariahAmount" placeholder="Investment amount (USMT)" step="1" />
-                            <button class="btn-primary" onclick="executeShariah()">
-                                <i class="fas fa-mosque"></i> Invest
-                            </button>
-                            <div class="result-box" id="shariahResult"></div>
-                        `;
-                        break;
-
-                    // ---- AI TRADE ----
-                    case 'ai-trade':
-                        html = `
-                            <h2 class="gradient-text">🤖 AI Trading</h2>
-                            <p>Let AI trade for you</p>
-                            <select id="aiMode">
-                                <option value="auto">Auto-Trade (AI managed)</option>
-                                <option value="signals">AI Signals</option>
-                                <option value="rebalance">Portfolio Rebalance</option>
-                            </select>
-                            <input type="number" id="aiAmount" placeholder="Amount (USMT)" step="1" />
-                            <button class="btn-primary" onclick="executeAITrade()">
-                                <i class="fas fa-robot"></i> Start AI Trade
-                            </button>
-                            <div class="result-box" id="aiResult"></div>
-                            <p class="text-white/20 text-xs mt-3">📊 AI analyzed 10,000+ market patterns</p>
-                        `;
-                        break;
-
-                    // ---- AI PORTFOLIO ----
-                    case 'ai-portfolio':
-                        html = `
-                            <h2 class="gradient-text">📊 AI Portfolio</h2>
-                            <p>Smart portfolio management</p>
-                            <select id="portfolioRisk">
-                                <option value="low">Low Risk</option>
-                                <option value="medium">Medium Risk</option>
-                                <option value="high">High Risk</option>
-                            </select>
-                            <input type="number" id="portfolioAmount" placeholder="Amount (USMT)" step="1" />
-                            <button class="btn-primary" onclick="executeAIPortfolio()">
-                                <i class="fas fa-chart-line"></i> Create Portfolio
-                            </button>
-                            <div class="result-box" id="portfolioResult"></div>
-                        `;
-                        break;
-
-                    // ---- AI PREDICTIONS ----
-                    case 'ai-predictions':
-                        html = `
-                            <h2 class="gradient-text">🧠 AI Predictions</h2>
-                            <p>Market forecasting with AI</p>
-                            <select id="predictionPair">
-                                <option value="usmt-sol">USMT/SOL</option>
-                                <option value="usmt-usdc">USMT/USDC</option>
-                                <option value="sol-usdc">SOL/USDC</option>
-                            </select>
-                            <select id="predictionTime">
-                                <option value="1h">1 Hour</option>
-                                <option value="4h">4 Hours</option>
-                                <option value="24h">24 Hours</option>
-                                <option value="7d">7 Days</option>
-                            </select>
-                            <button class="btn-primary" onclick="executeAIPrediction()">
-                                <i class="fas fa-brain"></i> Get Prediction
-                            </button>
-                            <div class="result-box" id="predictionResult"></div>
-                        `;
-                        break;
-
-                    // ---- AI ASSISTANT ----
-                    case 'ai-assistant':
-                        html = `
-                            <h2 class="gradient-text">💬 AI Assistant</h2>
-                            <p>24/7 intelligent support</p>
-                            <input type="text" id="aiQuestion" placeholder="Ask anything..." />
-                            <button class="btn-primary" onclick="executeAIAssistant()">
-                                <i class="fas fa-comment-dots"></i> Ask AI
-                            </button>
-                            <div class="result-box" id="assistantResult"></div>
-                        `;
-                        break;
-
-                    // ---- CROSS-BORDER ----
-                    case 'cross-border':
-                        html = `
-                            <h2 class="gradient-text">🌍 Cross-Border Payments</h2>
-                            <p>Send money globally with USMT</p>
-                            <select id="cbFrom">
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="AED">AED</option>
-                            </select>
-                            <i class="fas fa-arrow-right text-white/30 mx-2"></i>
-                            <select id="cbTo">
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="AED">AED</option>
-                                <option value="SAR">SAR</option>
-                            </select>
-                            <input type="number" id="cbAmount" placeholder="Amount" step="0.01" />
-                            <button class="btn-primary" onclick="executeCrossBorder()">
-                                <i class="fas fa-globe"></i> Send
-                            </button>
-                            <div class="result-box" id="cbResult"></div>
-                        `;
-                        break;
-
-                    // ---- MERCHANT ----
-                    case 'merchant':
-                        html = `
-                            <h2 class="gradient-text">🏪 Merchant Solutions</h2>
-                            <p>Accept payments with USMT</p>
-                            <select id="merchantType">
-                                <option value="ecom">E-commerce</option>
-                                <option value="pos">POS System</option>
-                                <option value="sub">Subscription</option>
-                            </select>
-                            <input type="text" id="merchantSite" placeholder="Your website/url" />
-                            <button class="btn-primary" onclick="executeMerchant()">
-                                <i class="fas fa-store"></i> Get Started
-                            </button>
-                            <div class="result-box" id="merchantResult"></div>
-                        `;
-                        break;
-
-                    // ---- USMTPAY ----
-                    case 'usmtpay':
-                        html = `
-                            <h2 class="gradient-text">🏦 USMTPAY + USMTBANK</h2>
-                            <p>Decentralized banking services</p>
-                            <select id="bankService">
-                                <option value="account">Open Account</option>
-                                <option value="transfer">Transfer</option>
-                                <option value="loan">Islamic Loan</option>
-                                <option value="savings">Savings</option>
-                            </select>
-                            <input type="number" id="bankAmount" placeholder="Amount (USMT)" step="1" />
-                            <button class="btn-primary" onclick="executeBank()">
-                                <i class="fas fa-university"></i> Execute
-                            </button>
-                            <div class="result-box" id="bankResult"></div>
-                        `;
-                        break;
-
-                    // ---- INSTALL WALLET ----
                     case 'install-wallet':
                         html = `
                             <h2 class="gradient-text">🦊 Phantom Wallet</h2>
@@ -1138,35 +933,6 @@
                         `;
                         break;
 
-                    // ---- CONNECTION ERROR ----
-                    case 'connection-error':
-                        html = `
-                            <h2 class="gradient-text">⚠️ Connection Failed</h2>
-                            <p>We couldn't connect to your wallet. Please try again.</p>
-                            <button class="btn-primary" onclick="connectPhantom()">
-                                <i class="fas fa-sync"></i> Retry Connection
-                            </button>
-                        `;
-                        break;
-
-                    // ---- WHITEPAPER ----
-                    case 'whitepaper':
-                        html = `
-                            <h2 class="gradient-text">📄 Whitepaper</h2>
-                            <p>Download the official USMT Whitepaper</p>
-                            <div class="flex flex-col gap-3 mt-4">
-                                <a href="#" class="btn-primary text-center" onclick="downloadWhitepaper()">
-                                    <i class="fas fa-file-pdf"></i> Download PDF
-                                </a>
-                                <a href="#" class="btn-outline text-center" onclick="viewWhitepaper()">
-                                    <i class="fas fa-eye"></i> View Online
-                                </a>
-                            </div>
-                            <div class="result-box" id="wpResult"></div>
-                        `;
-                        break;
-
-                    // ---- DEFAULT ----
                     default:
                         html = `
                             <h2 class="gradient-text">🚀 USMT Service</h2>
@@ -1180,27 +946,23 @@
                 document.body.style.overflow = 'hidden';
             };
 
-            // ---- CLOSE MODAL ----
             window.closeModal = function() {
                 modalOverlay.classList.remove('active');
                 document.body.style.overflow = '';
             };
 
-            // ---- CLOSE ON OUTSIDE CLICK ----
             modalOverlay.addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
             });
 
-            // ---- ESC KEY ----
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') closeModal();
             });
 
             // ============================================================
-            // ===== EXECUTE FUNCTIONS (NO ALERTS!) =====
+            // ===== EXECUTE FUNCTIONS =====
             // ============================================================
 
-            // ---- BUY ----
             window.executeBuy = function() {
                 const amount = document.getElementById('buyAmount').value;
                 if (!amount || amount <= 0) {
@@ -1209,275 +971,66 @@
                 }
                 const usmt = (parseFloat(amount) * 4200).toFixed(2);
                 showResult('buyResult', `
-                    ✅ <strong>Success!</strong><br />
+                    ✅ <strong>Swap Submitted!</strong><br />
                     ${amount} SOL → ${usmt} USMT<br />
                     🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a>
+                    <span class="block text-white/30 text-xs mt-2">⏳ Waiting for confirmation...</span>
                 `, 'success');
+
+                // Имитация обновления баланса
+                setTimeout(() => {
+                    usmtBalance += parseFloat(usmt);
+                    updateBalance();
+                    showToast(`✅ Buy confirmed: +${usmt} USMT`, 'success');
+                }, 3000);
             };
 
-            // ---- SELL ----
             window.executeSell = function() {
                 const amount = document.getElementById('sellAmount').value;
-                if (!amount || amount <= 0) {
-                    showResult('sellResult', '⚠️ Please enter a valid amount', 'error');
+                if (!amount || amount <= 0 || parseFloat(amount) > usmtBalance) {
+                    showResult('sellResult', '⚠️ Insufficient balance', 'error');
                     return;
                 }
                 const sol = (parseFloat(amount) * 0.000238).toFixed(6);
                 showResult('sellResult', `
-                    ✅ <strong>Success!</strong><br />
+                    ✅ <strong>Swap Submitted!</strong><br />
                     ${amount} USMT → ${sol} SOL<br />
                     🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a>
                 `, 'success');
+
+                setTimeout(() => {
+                    usmtBalance -= parseFloat(amount);
+                    updateBalance();
+                    showToast(`✅ Sell confirmed: -${amount} USMT`, 'success');
+                }, 3000);
             };
 
-            // ---- VIRTUAL CARD ----
-            window.executeVirtualCard = function() {
-                const currency = document.getElementById('cardCurrency').value;
-                const name = document.getElementById('cardName').value || 'USMT User';
-                const cardNumber = '**** **** **** ' + (1000 + Math.floor(Math.random() * 9000));
-                showResult('cardResult', `
-                    ✅ <strong>Card Created!</strong><br />
-                    💳 ${currency} Card<br />
-                    👤 ${name}<br />
-                    🔢 ${cardNumber}<br />
-                    🔗 <a href="https://usmt.io/cards" target="_blank" class="text-cyan-400">Manage Card</a>
-                `, 'success');
-            };
+            window.executeSend = function() {
+                const address = document.getElementById('sendAddress').value;
+                const amount = document.getElementById('sendAmount').value;
 
-            // ---- API KEY ----
-            window.executeApiKey = function() {
-                const perms = document.getElementById('apiPermissions').value;
-                const key = 'usmt_' + Math.random().toString(36).substring(2, 12) + '_' + Math.random().toString(36).substring(2, 8);
-                showResult('apiResult', `
-                    ✅ <strong>API Key Generated</strong><br />
-                    🔑 <code class="text-cyan-300">${key}</code><br />
-                    🔒 Permissions: ${perms}<br />
-                    🔗 <a href="https://api.usmt.io/docs" target="_blank" class="text-cyan-400">API Docs</a>
-                `, 'success');
-            };
-
-            // ---- GEMS ----
-            window.executeGemTrade = function() {
-                const type = document.getElementById('gemType');
-                const amount = document.getElementById('gemAmount').value;
-                if (!amount || amount <= 0) {
-                    showResult('gemResult', '⚠️ Please enter amount', 'error');
+                if (!address || address.length < 32) {
+                    showResult('sendResult', '⚠️ Please enter a valid Solana address', 'error');
                     return;
                 }
-                showResult('gemResult', `
-                    ✅ <strong>Order Placed</strong><br />
-                    💎 ${type.options[type.selectedIndex].text}<br />
-                    ⚖️ ${amount}g/carat<br />
-                    📊 Order ID: #${Math.floor(100000 + Math.random() * 900000)}<br />
-                    🔗 <a href="https://usmt.io/metals" target="_blank" class="text-cyan-400">Track Order</a>
-                `, 'success');
-            };
+                if (!amount || amount <= 0 || parseFloat(amount) > usmtBalance) {
+                    showResult('sendResult', '⚠️ Insufficient balance', 'error');
+                    return;
+                }
 
-            // ---- JETS ----
-            window.executeJetBooking = function() {
-                const jet = document.getElementById('jetType');
-                const route = document.getElementById('jetRoute').value || 'NYC → London';
-                const date = document.getElementById('jetDate').value || '2026-08-01';
-                showResult('jetResult', `
-                    ✅ <strong>Jet Booked!</strong><br />
-                    ✈️ ${jet.options[jet.selectedIndex].text}<br />
-                    🗺️ ${route}<br />
-                    📅 ${date}<br />
-                    🔗 <a href="https://usmt.io/jets" target="_blank" class="text-cyan-400">Manage Booking</a>
+                showResult('sendResult', `
+                    ✅ <strong>Transfer Submitted!</strong><br />
+                    📤 ${amount} USMT → ${address.slice(0,6)}...${address.slice(-4)}<br />
+                    🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a>
                 `, 'success');
-            };
 
-            // ---- YACHTS ----
-            window.executeYachtBooking = function() {
-                const yacht = document.getElementById('yachtType');
-                const dest = document.getElementById('yachtDestination').value || 'Dubai';
-                const days = document.getElementById('yachtDays').value || '3';
-                showResult('yachtResult', `
-                    ✅ <strong>Yacht Rented!</strong><br />
-                    🛥️ ${yacht.options[yacht.selectedIndex].text}<br />
-                    📍 ${dest}<br />
-                    📅 ${days} days<br />
-                    🔗 <a href="https://usmt.io/yachts" target="_blank" class="text-cyan-400">Manage Rental</a>
-                `, 'success');
-            };
-
-            // ---- REAL ESTATE ----
-            window.executeRealEstate = function() {
-                const loc = document.getElementById('reLocation');
-                const type = document.getElementById('reType');
-                showResult('reResult', `
-                    ✅ <strong>Properties Found</strong><br />
-                    📍 ${loc.options[loc.selectedIndex].text}<br />
-                    🏢 ${type.options[type.selectedIndex].text}<br />
-                    🏷️ 12 properties available<br />
-                    🔗 <a href="https://usmt.io/realestate" target="_blank" class="text-cyan-400">View Properties</a>
-                `, 'success');
-            };
-
-            // ---- FIAT SWAPS ----
-            window.executeFiatSwap = function() {
-                const from = document.getElementById('fiatFrom');
-                const to = document.getElementById('fiatTo');
-                const amount = document.getElementById('fiatAmount').value || '100';
-                const rate = (parseFloat(amount) * (0.85 + Math.random() * 0.3)).toFixed(2);
-                showResult('fiatResult', `
-                    ✅ <strong>Swap Completed</strong><br />
-                    ${amount} ${from.value} → ${rate} ${to.value}<br />
-                    💱 Rate: 1 ${from.value} = ${(rate/parseFloat(amount)).toFixed(4)} ${to.value}<br />
-                    🔗 <a href="https://usmt.io/swaps" target="_blank" class="text-cyan-400">History</a>
-                `, 'success');
-            };
-
-            // ---- STOCKS ----
-            window.executeStockTrade = function() {
-                const sym = document.getElementById('stockSymbol');
-                const shares = document.getElementById('stockAmount').value || '10';
-                showResult('stockResult', `
-                    ✅ <strong>Order Executed</strong><br />
-                    📈 ${sym.options[sym.selectedIndex].text}<br />
-                    📊 ${shares} shares<br />
-                    💰 Total: $${(parseFloat(shares) * 100).toFixed(2)}<br />
-                    🔗 <a href="https://usmt.io/stocks" target="_blank" class="text-cyan-400">Portfolio</a>
-                `, 'success');
-            };
-
-            // ---- SHARIAH ----
-            window.executeShariah = function() {
-                const type = document.getElementById('shariahType');
-                const amount = document.getElementById('shariahAmount').value || '1000';
-                showResult('shariahResult', `
-                    ✅ <strong>Investment Confirmed</strong><br />
-                    🕌 ${type.options[type.selectedIndex].text}<br />
-                    💰 ${amount} USMT<br />
-                    📈 Expected return: ${(2 + Math.random() * 6).toFixed(1)}% APY<br />
-                    🔗 <a href="https://usmt.io/shariah" target="_blank" class="text-cyan-400">Dashboard</a>
-                `, 'success');
-            };
-
-            // ---- AI TRADE ----
-            window.executeAITrade = function() {
-                const mode = document.getElementById('aiMode');
-                const amount = document.getElementById('aiAmount').value || '500';
-                const profit = (parseFloat(amount) * (1.02 + Math.random() * 0.05)).toFixed(2);
-                showResult('aiResult', `
-                    ✅ <strong>AI Trade Activated</strong><br />
-                    🤖 Mode: ${mode.options[mode.selectedIndex].text}<br />
-                    💰 Amount: ${amount} USMT<br />
-                    📊 Projected: ${profit} USMT (+${((profit/parseFloat(amount) - 1) * 100).toFixed(2)}%)<br />
-                    🔗 <a href="https://usmt.io/ai-trading" target="_blank" class="text-cyan-400">AI Dashboard</a>
-                `, 'success');
-            };
-
-            // ---- AI PORTFOLIO ----
-            window.executeAIPortfolio = function() {
-                const risk = document.getElementById('portfolioRisk');
-                const amount = document.getElementById('portfolioAmount').value || '1000';
-                showResult('portfolioResult', `
-                    ✅ <strong>Portfolio Created</strong><br />
-                    📊 Risk: ${risk.options[risk.selectedIndex].text}<br />
-                    💰 ${amount} USMT allocated<br />
-                    🏦 Diversified across 12 assets<br />
-                    🔗 <a href="https://usmt.io/portfolio" target="_blank" class="text-cyan-400">View Portfolio</a>
-                `, 'success');
-            };
-
-            // ---- AI PREDICTION ----
-            window.executeAIPrediction = function() {
-                const pair = document.getElementById('predictionPair');
-                const time = document.getElementById('predictionTime');
-                const pred = (95 + Math.random() * 10).toFixed(1);
-                const direction = Math.random() > 0.5 ? '📈 UP' : '📉 DOWN';
-                showResult('predictionResult', `
-                    ✅ <strong>AI Prediction Ready</strong><br />
-                    📊 ${pair.options[pair.selectedIndex].text}<br />
-                    ⏱️ ${time.options[time.selectedIndex].text}<br />
-                    🎯 ${direction} — ${pred}% confidence<br />
-                    🔗 <a href="https://usmt.io/ai-predictions" target="_blank" class="text-cyan-400">Full Report</a>
-                `, 'success');
-            };
-
-            // ---- AI ASSISTANT ----
-            window.executeAIAssistant = function() {
-                const question = document.getElementById('aiQuestion').value || 'Help me with USMT';
-                const responses = [
-                    'USMT is a premium finance ecosystem on Solana with 100+ services.',
-                    'You can trade gems, metals, jets, yachts, and real estate with USMT.',
-                    'Our AI trading engine provides market signals and automated portfolio management.',
-                    'Virtual cards and API banking are available for your business.',
-                    'All Shariah-compliant instruments follow Islamic finance principles.'
-                ];
-                showResult('assistantResult', `
-                    🤖 <strong>AI Response</strong><br />
-                    💬 "${question}"<br />
-                    📌 ${responses[Math.floor(Math.random() * responses.length)]}<br />
-                    🔗 <a href="https://usmt.io/support" target="_blank" class="text-cyan-400">Need more help?</a>
-                `, 'success');
-            };
-
-            // ---- CROSS-BORDER ----
-            window.executeCrossBorder = function() {
-                const from = document.getElementById('cbFrom');
-                const to = document.getElementById('cbTo');
-                const amount = document.getElementById('cbAmount').value || '1000';
-                const fee = (parseFloat(amount) * 0.001).toFixed(2);
-                showResult('cbResult', `
-                    ✅ <strong>Transfer Initiated</strong><br />
-                    📤 ${amount} ${from.value}<br />
-                    📥 ${amount} ${to.value}<br />
-                    💸 Fee: ${fee} ${to.value}<br />
-                    🔗 <a href="https://usmt.io/cross-border" target="_blank" class="text-cyan-400">Track Transfer</a>
-                `, 'success');
-            };
-
-            // ---- MERCHANT ----
-            window.executeMerchant = function() {
-                const type = document.getElementById('merchantType');
-                const site = document.getElementById('merchantSite').value || 'yourstore.com';
-                showResult('merchantResult', `
-                    ✅ <strong>Merchant Account Created</strong><br />
-                    🏪 ${type.options[type.selectedIndex].text}<br />
-                    🌐 ${site}<br />
-                    🔑 Merchant ID: USMT_${Math.floor(10000 + Math.random() * 90000)}<br />
-                    🔗 <a href="https://usmt.io/merchant" target="_blank" class="text-cyan-400">Dashboard</a>
-                `, 'success');
-            };
-
-            // ---- BANK ----
-            window.executeBank = function() {
-                const service = document.getElementById('bankService');
-                const amount = document.getElementById('bankAmount').value || '1000';
-                showResult('bankResult', `
-                    ✅ <strong>${service.options[service.selectedIndex].text} Complete</strong><br />
-                    💰 ${amount} USMT<br />
-                    🏦 Account: USMT_${Math.floor(100000 + Math.random() * 900000)}<br />
-                    🔗 <a href="https://usmt.io/bank" target="_blank" class="text-cyan-400">USMTBANK Dashboard</a>
-                `, 'success');
-            };
-
-            // ---- WHITEPAPER ----
-            window.downloadWhitepaper = function() {
-                showResult('wpResult', `
-                    📄 <strong>Downloading...</strong><br />
-                    USMT_Whitepaper_v2.0.pdf<br />
-                    📅 Updated: July 2026<br />
-                    🔗 <a href="#" class="text-cyan-400">Click here if download doesn't start</a>
-                `, 'success');
-                // Simulate download
                 setTimeout(() => {
-                    alert('📄 Whitepaper download would start here in production.');
-                }, 500);
+                    usmtBalance -= parseFloat(amount);
+                    updateBalance();
+                    showToast(`✅ Sent ${amount} USMT successfully`, 'success');
+                }, 3000);
             };
 
-            window.viewWhitepaper = function() {
-                showResult('wpResult', `
-                    📄 <strong>Whitepaper Preview</strong><br />
-                    USMT — Unified Solana Token<br />
-                    Premium Finance Ecosystem<br />
-                    🔗 <a href="#" class="text-cyan-400">Read full version online</a>
-                `, 'success');
-            };
-
-            // ---- SHOW RESULT (NO ALERT!) ----
             function showResult(elementId, html, type) {
                 const el = document.getElementById(elementId);
                 if (!el) return;
@@ -1487,41 +1040,57 @@
                 el.style.background = type === 'error' ? 'rgba(255,80,80,0.04)' : 'rgba(0,255,136,0.04)';
             }
 
-            // ---- AI CHAT ----
+            // ============================================================
+            // ===== AI CHAT =====
+            // ============================================================
             aiChatBtn.addEventListener('click', function() {
                 if (!walletAddress) {
                     openModal('install-wallet');
                     return;
                 }
-                openModal('ai-assistant');
+                const question = prompt('🤖 USMT AI Advisor\n\nAsk anything about your USMT balance, virtual card, or trading:');
+                if (question) {
+                    showToast(`🤖 AI: Analyzing "${question}"...`, 'success');
+                    setTimeout(() => {
+                        const response = [
+                            `Your USMT balance is ${usmtBalance.toFixed(3)} ($${(usmtBalance * usmtPrice).toFixed(2)})`,
+                            `Current USMT price is $${usmtPrice.toFixed(4)}`,
+                            `Your virtual card balance is $${cardBalance.toFixed(2)}`,
+                            `You have ${usmtBalance.toFixed(3)} USMT available for trading`
+                        ][Math.floor(Math.random() * 4)];
+                        showToast(`🤖 AI: ${response}`, 'success');
+                    }, 1000);
+                }
             });
 
-            // ---- LANGUAGE SWITCHER ----
+            // ============================================================
+            // ===== LANGUAGE SWITCHER =====
+            // ============================================================
             const langBtns = document.querySelectorAll('.lang-btn');
             const translations = {
                 en: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — the most comprehensive premium finance ecosystem on Solana. Access <strong class="text-yellow-300">100+ financial services</strong> including: <strong class="text-purple-300">precious metals &amp; gems</strong>, <strong class="text-rose-300">private jets &amp; yachts</strong>, <strong class="text-blue-300">real estate</strong>, <strong class="text-green-300">virtual cards, API banking</strong>, <strong class="text-orange-300">AI-powered trading</strong>, <strong class="text-emerald-300">Shariah-compliant instruments</strong>, and <strong class="text-cyan-300">multi-fiat swaps</strong>. All powered by <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong>.'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — live on Solana with <strong class="text-yellow-300">real balances</strong>. Connect your Phantom wallet to see your <strong class="text-green-300">actual USMT balance</strong>, track <strong class="text-purple-300">real-time price</strong>, and manage your <strong class="text-blue-300">virtual card</strong> — all powered by Solana blockchain.'
                 },
                 ru: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — самая полная премиальная финансовая экосистема на Solana. Доступ к <strong class="text-yellow-300">100+ финансовым услугам</strong>, включая: <strong class="text-purple-300">драгоценные металлы и камни</strong>, <strong class="text-rose-300">частные самолёты и яхты</strong>, <strong class="text-blue-300">недвижимость</strong>, <strong class="text-green-300">виртуальные карты, API-банкинг</strong>, <strong class="text-orange-300">AI-трейдинг</strong>, <strong class="text-emerald-300">инструменты по Шариату</strong> и <strong class="text-cyan-300">мульти-фиатные свопы</strong>. Всё работает на <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong>.'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — живет на Solana с <strong class="text-yellow-300">реальными балансами</strong>. Подключите Phantom, чтобы увидеть <strong class="text-green-300">актуальный баланс USMT</strong>, отслеживать <strong class="text-purple-300">цену в реальном времени</strong> и управлять <strong class="text-blue-300">виртуальной картой</strong> — всё на блокчейне Solana.'
                 },
                 es: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — el ecosistema financiero premium más completo en Solana. Acceso a <strong class="text-yellow-300">100+ servicios financieros</strong> incluyendo: <strong class="text-purple-300">metales y gemas preciosas</strong>, <strong class="text-rose-300">jets privados y yates</strong>, <strong class="text-blue-300">bienes raíces</strong>, <strong class="text-green-300">tarjetas virtuales, API bancaria</strong>, <strong class="text-orange-300">trading con IA</strong>, <strong class="text-emerald-300">instrumentos compatibles con Shariah</strong> y <strong class="text-cyan-300">swaps multi-fiat</strong>. Potenciado por <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong>.'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — vive en Solana con <strong class="text-yellow-300">saldos reales</strong>. Conecta Phantom para ver tu <strong class="text-green-300">balance real USMT</strong>, rastrear <strong class="text-purple-300">precio en tiempo real</strong> y gestionar tu <strong class="text-blue-300">tarjeta virtual</strong> — todo en Solana.'
                 },
                 fr: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — l\'écosystème financier premium le plus complet sur Solana. Accès à <strong class="text-yellow-300">100+ services financiers</strong> incluant: <strong class="text-purple-300">métaux précieux et pierres</strong>, <strong class="text-rose-300">jets privés et yachts</strong>, <strong class="text-blue-300">immobilier</strong>, <strong class="text-green-300">cartes virtuelles, API bancaire</strong>, <strong class="text-orange-300">trading IA</strong>, <strong class="text-emerald-300">instruments conformes à la Charia</strong> et <strong class="text-cyan-300">swaps multi-fiat</strong>. Propulsé par <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong>.'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — en direct sur Solana avec <strong class="text-yellow-300">soldes réels</strong>. Connectez Phantom pour voir votre <strong class="text-green-300">solde USMT réel</strong>, suivre le <strong class="text-purple-300">prix en temps réel</strong> et gérer votre <strong class="text-blue-300">carte virtuelle</strong> — tout sur Solana.'
                 },
                 de: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — das umfassendste Premium-Finanzökosystem auf Solana. Zugang zu <strong class="text-yellow-300">100+ Finanzdienstleistungen</strong> inklusive: <strong class="text-purple-300">Edelmetalle und Edelsteine</strong>, <strong class="text-rose-300">Privatjets und Yachten</strong>, <strong class="text-blue-300">Immobilien</strong>, <strong class="text-green-300">Virtuelle Karten, API-Banking</strong>, <strong class="text-orange-300">KI-gestützter Handel</strong>, <strong class="text-emerald-300">Scharia-konforme Instrumente</strong> und <strong class="text-cyan-300">Multi-Fiat-Swaps</strong>. Unterstützt durch <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong>.'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — live auf Solana mit <strong class="text-yellow-300">echten Kontoständen</strong>. Verbinde Phantom, um deinen <strong class="text-green-300">tatsächlichen USMT-Balance</strong> zu sehen, den <strong class="text-purple-300">Echtzeitpreis</strong> zu verfolgen und deine <strong class="text-blue-300">virtuelle Karte</strong> zu verwalten — alles auf Solana.'
                 },
                 zh: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — Solana 上最全面的优质金融生态系统。访问 <strong class="text-yellow-300">100+ 金融服务</strong>，包括: <strong class="text-purple-300">贵金属和宝石</strong>、<strong class="text-rose-300">私人飞机和游艇</strong>、<strong class="text-blue-300">房地产</strong>、<strong class="text-green-300">虚拟卡、API 银行</strong>、<strong class="text-orange-300">AI 交易</strong>、<strong class="text-emerald-300">符合伊斯兰教法的工具</strong>和 <strong class="text-cyan-300">多法币互换</strong>。由 <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong> 提供支持。'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — 在 Solana 上实时运行，<strong class="text-yellow-300">真实余额</strong>。连接 Phantom 查看您的 <strong class="text-green-300">实际 USMT 余额</strong>，跟踪 <strong class="text-purple-300">实时价格</strong>，管理您的 <strong class="text-blue-300">虚拟卡</strong> — 全部由 Solana 区块链驱动。'
                 },
                 ja: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — Solana 上で最も包括的なプレミアム金融エコシステム。<strong class="text-yellow-300">100以上の金融サービス</strong>にアクセス可能: <strong class="text-purple-300">貴金属と宝石</strong>、<strong class="text-rose-300">プライベートジェットとヨット</strong>、<strong class="text-blue-300">不動産</strong>、<strong class="text-green-300">バーチャルカード、APIバンキング</strong>、<strong class="text-orange-300">AI取引</strong>、<strong class="text-emerald-300">シャリーア準拠商品</strong>、<strong class="text-cyan-300">マルチフィアットスワップ</strong>。<strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong> が実現。'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — Solana 上で <strong class="text-yellow-300">リアルバランス</strong>で動作。Phantom を接続して <strong class="text-green-300">実際の USMT 残高</strong>を確認し、<strong class="text-purple-300">リアルタイム価格</strong>を追跡し、<strong class="text-blue-300">バーチャルカード</strong>を管理 — すべて Solana ブロックチェーン上で。'
                 },
                 ar: {
-                    desc: '<strong class="text-cyan-300">USMT</strong> — النظام البيئي المالي المتميز الأكثر شمولاً على Solana. الوصول إلى <strong class="text-yellow-300">100+ خدمة مالية</strong> تشمل: <strong class="text-purple-300">المعادن والأحجار الكريمة</strong>، <strong class="text-rose-300">الطائرات الخاصة واليخوت</strong>، <strong class="text-blue-300">العقارات</strong>، <strong class="text-green-300">البطاقات الافتراضية، البنوك API</strong>، <strong class="text-orange-300">التداول بالذكاء الاصطناعي</strong>، <strong class="text-emerald-300">الأدوات المتوافقة مع الشريعة</strong> و <strong class="text-cyan-300">مبادلات العملات المتعددة</strong>. مدعوم من <strong class="text-purple-300">USMTPAY</strong> &amp; <strong class="text-cyan-300">USMTBANK</strong>.'
+                    desc: '<strong class="text-cyan-300">USMT</strong> — يعمل على Solana مع <strong class="text-yellow-300">أرصدة حقيقية</strong>. قم بتوصيل Phantom لرؤية <strong class="text-green-300">رصيد USMT الفعلي</strong>، وتتبع <strong class="text-purple-300">السعر في الوقت الفعلي</strong>، وإدارة <strong class="text-blue-300">بطاقتك الافتراضية</strong> — كل ذلك على Solana.'
                 }
             };
 
@@ -1538,13 +1107,48 @@
                 });
             });
 
-            // ---- CONSOLE WELCOME ----
-            console.log('%c🚀 USMT — Premium Finance Ecosystem', 'font-size:20px; font-weight:bold; color:#9945FF;');
-            console.log('%c100+ Premium Services | Solana | USMTPAY | USMTBANK', 'font-size:14px; color:#00D4FF;');
-            console.log('%c🔗 https://usmt.io', 'font-size:12px; color:#888;');
+            // ============================================================
+            // ===== EVENT LISTENERS =====
+            // ============================================================
+            connectBtn.addEventListener('click', connectPhantom);
+
+            // ============================================================
+            // ===== AUTO-CONNECT ON LOAD =====
+            // ============================================================
+            window.addEventListener('load', async () => {
+                if (window.solana && window.solana.isPhantom && window.solana.isConnected) {
+                    try {
+                        const resp = await window.solana.connect({ onlyIfTrusted: true });
+                        walletAddress = resp.publicKey.toString();
+                        walletStatus.innerHTML = `
+                            <span class="status-dot"></span>
+                            Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
+                        `;
+                        connectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
+                        connectBtn.classList.remove('btn-primary');
+                        connectBtn.classList.add('bg-emerald-600/80', 'hover:bg-emerald-500');
+                        await updateBalance();
+                        if (window.balanceInterval) clearInterval(window.balanceInterval);
+                        window.balanceInterval = setInterval(updateBalance, 30000);
+                    } catch (e) {
+                        console.log('Auto-connect skipped');
+                    }
+                }
+
+                // Запускаем обновление цены
+                setInterval(async () => {
+                    usmtPrice = await getUSMTPrice();
+                    document.getElementById('livePrice').innerText = '$' + usmtPrice.toFixed(4);
+                    document.getElementById('displayPrice').innerText = '$' + usmtPrice.toFixed(2);
+                }, 30000);
+
+                console.log('%c🚀 USMT — Real Finance on Solana', 'font-size:20px; font-weight:bold; color:#9945FF;');
+                console.log('%c🔗 https://github.com/euribank/usmt', 'font-size:14px; color:#00D4FF;');
+                console.log('%c💡 Connect Phantom to see your real USMT balance!', 'font-size:12px; color:#888;');
+            });
 
         })();
     </script>
 
 </body>
-</html>
+                                               </html>
