@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>USMT — Premium Ecosystem</title>
+    <title>USMT — Unified Solana Token</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
 
     <style>
-        /* ===== ВСЕ СТИЛИ ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ (ТЫ ИХ УЖЕ ВИДЕЛ) ===== */
+        /* ===== ВСЕ СТИЛИ (ПОЛНОСТЬЮ) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #06080f; font-family: 'Inter', sans-serif; color: #fff; overflow-x: hidden; }
 
@@ -266,7 +266,7 @@
             <div class="glass-card p-4 text-center"><div class="stat-number text-purple-300" id="holdersCount">1,234</div><div class="stat-label">Holders</div></div>
         </div>
 
-        <!-- ===== КОШЕЛЁК (РЕАЛЬНЫЙ БАЛАНС USMT) ===== -->
+        <!-- ===== КОШЕЛЁК (АВТОМАТИЧЕСКИЙ ПОИСК СЕТИ) ===== -->
         <div class="glass p-6 md:p-8 mt-8 max-w-3xl mx-auto">
             <div class="flex flex-col md:flex-row items-center justify-center gap-4">
                 <button id="connectWallet" class="btn-primary w-full md:w-auto flex items-center justify-center gap-3">
@@ -484,20 +484,19 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT ===== -->
+    <!-- ===== JAVASCRIPT (АВТОМАТИЧЕСКИЙ ПОИСК СЕТИ) ===== -->
     <script>
         (function() {
             'use strict';
 
             // ============================================================
-            // ===== КОНФИГ USMT =====
+            // ===== КОНФИГ ТОКЕНА =====
             // ============================================================
             const USMT_CONFIG = {
                 mintAddress: '9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT',
                 decimals: 9,
                 symbol: 'USMT',
-                name: 'Unified Solana Token',
-                price: 0.25
+                name: 'Unified Solana Token'
             };
 
             // ============================================================
@@ -517,59 +516,50 @@
 
             let walletAddress = null;
             let usmtBalance = 0;
-            let usmtPrice = USMT_CONFIG.price;
+            let usmtPrice = 0.25;
+            let currentNetwork = '';
 
             // ============================================================
-            // ===== УМНЫЙ ПОИСК БАЛАНСА (MAINNET + DEVNET) =====
+            // ===== АВТОМАТИЧЕСКИЙ ПОИСК БАЛАНСА ВО ВСЕХ СЕТЯХ =====
             // ============================================================
-            async function getRealUSMTBalance(address) {
-                if (!address) return 0;
-                try {
-                    const pubKey = new solanaWeb3.PublicKey(address);
-                    const tokenMint = new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress);
-                    
-                    // Проверяем обе сети
-                    const networks = [
-                        { name: 'Mainnet', url: 'https://api.mainnet-beta.solana.com' },
-                        { name: 'Devnet', url: 'https://api.devnet.solana.com' }
-                    ];
+            async function findUSMTBalance(address) {
+                if (!address) return { balance: 0, network: '' };
 
-                    let totalBalance = 0;
-                    let foundInNetwork = '';
+                const pubKey = new solanaWeb3.PublicKey(address);
+                const tokenMint = new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress);
 
-                    for (const net of networks) {
-                        const tempConnection = new solanaWeb3.Connection(net.url, 'confirmed');
-                        try {
-                            const tokenAccounts = await tempConnection.getTokenAccountsByOwner(pubKey, {
-                                mint: tokenMint
-                            });
+                // Список всех возможных сетей
+                const networks = [
+                    { name: 'Mainnet', url: 'https://api.mainnet-beta.solana.com' },
+                    { name: 'Devnet', url: 'https://api.devnet.solana.com' },
+                    { name: 'Testnet', url: 'https://api.testnet.solana.com' }
+                ];
 
-                            if (tokenAccounts.value.length > 0) {
-                                foundInNetwork = net.name;
-                                for (const account of tokenAccounts.value) {
-                                    const data = account.account.data;
-                                    const balanceBuffer = data.slice(64, 72);
-                                    const balance = Number(balanceBuffer.readBigInt64LE()) / Math.pow(10, USMT_CONFIG.decimals);
-                                    totalBalance += balance;
-                                }
-                                break; // Нашли в одной сети — выходим
+                for (const net of networks) {
+                    try {
+                        const connection = new solanaWeb3.Connection(net.url, 'confirmed');
+                        const tokenAccounts = await connection.getTokenAccountsByOwner(pubKey, {
+                            mint: tokenMint
+                        });
+
+                        if (tokenAccounts.value.length > 0) {
+                            let totalBalance = 0;
+                            for (const account of tokenAccounts.value) {
+                                const data = account.account.data;
+                                const balanceBuffer = data.slice(64, 72);
+                                const balance = Number(balanceBuffer.readBigInt64LE()) / Math.pow(10, USMT_CONFIG.decimals);
+                                totalBalance += balance;
                             }
-                        } catch (e) {
-                            console.log(`⚠️ Ошибка при проверке ${net.name}:`, e.message);
+                            console.log(`✅ Найдено ${totalBalance.toFixed(3)} USMT в сети ${net.name}`);
+                            return { balance: totalBalance, network: net.name };
                         }
+                    } catch (e) {
+                        console.log(`⚠️ Ошибка при проверке ${net.name}:`, e.message);
                     }
-
-                    if (totalBalance > 0) {
-                        console.log(`✅ Найдено ${totalBalance.toFixed(3)} USMT в сети: ${foundInNetwork}`);
-                    } else {
-                        console.log('ℹ️ Токены не найдены ни в Mainnet, ни в Devnet. Проверь адрес токена.');
-                    }
-
-                    return totalBalance;
-                } catch (error) {
-                    console.error('❌ Ошибка получения баланса:', error);
-                    return 0;
                 }
+
+                console.log('ℹ️ Токены не найдены ни в одной сети');
+                return { balance: 0, network: '' };
             }
 
             // ============================================================
@@ -589,20 +579,33 @@
             }
 
             // ============================================================
-            // ===== ОБНОВЛЕНИЕ БАЛАНСА =====
+            // ===== ОБНОВЛЕНИЕ БАЛАНСА (АВТОМАТИЧЕСКИЙ ПОИСК) =====
             // ============================================================
             async function updateBalance() {
                 if (!walletAddress) return;
 
-                usmtBalance = await getRealUSMTBalance(walletAddress);
+                // Автоматически ищем баланс во всех сетях
+                const result = await findUSMTBalance(walletAddress);
+                usmtBalance = result.balance;
+                currentNetwork = result.network;
+
+                // Получаем цену
                 usmtPrice = await getUSMTPrice();
 
                 const usdBalance = usmtBalance * usmtPrice;
 
+                // Обновляем UI
                 balanceSpan.innerText = usmtBalance.toFixed(3);
                 balanceUSDSpan.innerText = '$' + usdBalance.toFixed(2);
 
-                // КАРТА: 30% от общего баланса
+                // Обновляем статус кошелька с информацией о сети
+                walletStatus.innerHTML = `
+                    <span class="status-dot"></span>
+                    Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
+                    ${currentNetwork ? '🔗 ' + currentNetwork : ''}
+                `;
+
+                // Карта: 30% от общего баланса
                 const cardPercent = 0.3;
                 const cardUsdBalance = usdBalance * cardPercent;
                 const cardUsmtBalance = usmtBalance * cardPercent;
@@ -626,7 +629,7 @@
             }
 
             // ============================================================
-            // ===== TOAST-УВЕДОМЛЕНИЯ =====
+            // ===== TOAST =====
             // ============================================================
             function showToast(message, type = 'info') {
                 const existing = document.querySelector('.toast');
@@ -656,11 +659,6 @@
                 try {
                     const resp = await window.solana.connect();
                     walletAddress = resp.publicKey.toString();
-
-                    walletStatus.innerHTML = `
-                        <span class="status-dot"></span>
-                        Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
-                    `;
 
                     connectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
                     connectBtn.classList.remove('btn-primary');
@@ -1606,10 +1604,6 @@
                     try {
                         const resp = await window.solana.connect({ onlyIfTrusted: true });
                         walletAddress = resp.publicKey.toString();
-                        walletStatus.innerHTML = `
-                            <span class="status-dot"></span>
-                            Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
-                        `;
                         connectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
                         connectBtn.classList.remove('btn-primary');
                         connectBtn.classList.add('bg-emerald-600/80', 'hover:bg-emerald-500');
@@ -1627,7 +1621,7 @@
                     document.getElementById('displayPrice').innerText = '$' + usmtPrice.toFixed(2);
                 }, 30000);
 
-                console.log('%c🚀 USMT — 100+ Services + Real Balance', 'font-size:20px; font-weight:bold; color:#9945FF;');
+                console.log('%c🚀 USMT — 100+ Services + Real Balance (Auto-Network)', 'font-size:20px; font-weight:bold; color:#9945FF;');
                 console.log('%c🔗 Token: 9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', 'font-size:14px; color:#00D4FF;');
             });
 
