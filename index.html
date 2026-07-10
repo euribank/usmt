@@ -334,7 +334,6 @@
             <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('ai-trade')"><i class="fas fa-robot"></i> AI Trade</button>
         </div>
 
-        <!-- КАТЕГОРИИ УСЛУГ -->
         <div class="mt-12">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-gem text-cyan-400 mr-2"></i> Premium Assets
@@ -469,8 +468,6 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT (С АВТОМАТИЧЕСКИМ ПОИСКОМ ВСЕХ СЕТЕЙ) ===== -->
     <script>
         (function() {
             'use strict';
@@ -500,49 +497,43 @@
             let currentNetwork = '';
 
             // ============================================================
-            // ===== АВТОМАТИЧЕСКИЙ ПОИСК БАЛАНСА ВО ВСЕХ СЕТЯХ =====
+            // ===== РЕАЛЬНЫЙ ЗАПРОС К SOLANA (DEVNET) =====
             // ============================================================
-            async function findUSMTBalance(address) {
+            async function getUSMTBalance(address) {
                 if (!address) return { balance: 0, network: '' };
 
                 const pubKey = new solanaWeb3.PublicKey(address);
                 const tokenMint = new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress);
+                const connection = new solanaWeb3.Connection('https://api.devnet.solana.com', 'confirmed');
 
-                const networks = [
-                    { name: 'Mainnet', url: 'https://api.mainnet-beta.solana.com' },
-                    { name: 'Devnet', url: 'https://api.devnet.solana.com' },
-                    { name: 'Testnet', url: 'https://api.testnet.solana.com' }
-                ];
+                try {
+                    const tokenAccounts = await connection.getTokenAccountsByOwner(pubKey, {
+                        mint: tokenMint
+                    });
 
-                for (const net of networks) {
-                    try {
-                        const connection = new solanaWeb3.Connection(net.url, 'confirmed');
-                        const tokenAccounts = await connection.getTokenAccountsByOwner(pubKey, {
-                            mint: tokenMint
-                        });
-
-                        if (tokenAccounts.value.length > 0) {
-                            let totalBalance = 0;
-                            for (const account of tokenAccounts.value) {
-                                const data = account.account.data;
-                                const balanceBuffer = data.slice(64, 72);
-                                const balance = Number(balanceBuffer.readBigInt64LE()) / Math.pow(10, USMT_CONFIG.decimals);
-                                totalBalance += balance;
-                            }
-                            console.log(`✅ Найдено ${totalBalance.toFixed(3)} USMT в сети ${net.name}`);
-                            return { balance: totalBalance, network: net.name };
-                        }
-                    } catch (e) {
-                        console.log(`⚠️ Ошибка при проверке ${net.name}:`, e.message);
+                    if (tokenAccounts.value.length === 0) {
+                        console.log('ℹ️ Нет USMT на Devnet');
+                        return { balance: 0, network: '' };
                     }
-                }
 
-                console.log('ℹ️ Токены не найдены ни в одной сети');
-                return { balance: 0, network: '' };
+                    let totalBalance = 0;
+                    for (const account of tokenAccounts.value) {
+                        const data = account.account.data;
+                        const balanceBuffer = data.slice(64, 72);
+                        const balance = Number(balanceBuffer.readBigInt64LE()) / Math.pow(10, USMT_CONFIG.decimals);
+                        totalBalance += balance;
+                    }
+
+                    console.log(`✅ Найдено ${totalBalance.toFixed(3)} USMT на Devnet`);
+                    return { balance: totalBalance, network: 'Devnet' };
+                } catch (error) {
+                    console.error('Ошибка получения баланса:', error);
+                    return { balance: 0, network: '' };
+                }
             }
 
             // ============================================================
-            // ===== РЕАЛЬНАЯ ЦЕНА USMT =====
+            // ===== ЦЕНА USMT =====
             // ============================================================
             async function getUSMTPrice() {
                 try {
@@ -552,7 +543,6 @@
                     const data = await response.json();
                     return data.data[USMT_CONFIG.mintAddress]?.price || 0.25;
                 } catch (error) {
-                    console.error('Error fetching price:', error);
                     return 0.25;
                 }
             }
@@ -563,7 +553,7 @@
             async function updateBalance() {
                 if (!walletAddress) return;
 
-                const result = await findUSMTBalance(walletAddress);
+                const result = await getUSMTBalance(walletAddress);
                 usmtBalance = result.balance;
                 currentNetwork = result.network;
 
@@ -577,7 +567,7 @@
                 walletStatus.innerHTML = `
                     <span class="status-dot"></span>
                     Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
-                    ${currentNetwork ? '🔗 ' + currentNetwork : ''}
+                    ${currentNetwork ? '🔗 ' + currentNetwork : '⚠️ No USMT found'}
                 `;
 
                 const cardPercent = 0.3;
@@ -640,11 +630,11 @@
                     if (window.balanceInterval) clearInterval(window.balanceInterval);
                     window.balanceInterval = setInterval(updateBalance, 30000);
 
-                    showToast('✅ Wallet connected successfully!', 'success');
+                    showToast('✅ Wallet connected!', 'success');
 
                 } catch (err) {
                     console.error(err);
-                    showToast('❌ Connection failed. Please try again.', 'error');
+                    showToast('❌ Connection failed', 'error');
                 }
             }
 
@@ -661,10 +651,10 @@
                 if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
                     const usmtAmount = parseFloat(amount);
                     if (usmtAmount > usmtBalance) {
-                        showToast('⚠️ Insufficient USMT balance!', 'error');
+                        showToast('⚠️ Insufficient balance!', 'error');
                         return;
                     }
-                    showToast(`✅ Card topped up with ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
+                    showToast(`✅ Topped up ${usmtAmount} USMT`, 'success');
                     usmtBalance -= usmtAmount;
                     updateBalance();
                 }
@@ -684,7 +674,7 @@
                         showToast('⚠️ Insufficient card balance!', 'error');
                         return;
                     }
-                    showToast(`✅ Withdrawn ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
+                    showToast(`✅ Withdrawn ${usmtAmount} USMT`, 'success');
                     usmtBalance += usmtAmount;
                     updateBalance();
                 }
@@ -1566,7 +1556,7 @@
             });
 
             // ============================================================
-            // ===== СОБЫТИЯ =====
+            // ===== ЗАПУСК =====
             // ============================================================
             connectBtn.addEventListener('click', connectPhantom);
 
@@ -1592,7 +1582,7 @@
                     document.getElementById('displayPrice').innerText = '$' + usmtPrice.toFixed(2);
                 }, 30000);
 
-                console.log('%c🚀 USMT — 100+ Services + Auto-Network Detection', 'font-size:20px; font-weight:bold; color:#9945FF;');
+                console.log('%c🚀 USMT — Devnet Mode', 'font-size:20px; font-weight:bold; color:#9945FF;');
                 console.log('%c🔗 Token: 9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', 'font-size:14px; color:#00D4FF;');
             });
 
