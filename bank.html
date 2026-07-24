@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
-    <script src="https://unpkg.com/@solana/spl-token@0.3.8/lib/index.iife.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -147,7 +146,6 @@
     </video>
     <div class="overlay-dark"></div>
 
-    <!-- ===== НАВИГАЦИЯ ===== -->
     <nav class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
         <a href="index.html" class="flex items-center gap-2 text-2xl font-bold">
             <span class="gradient-text">USMT</span>
@@ -160,7 +158,6 @@
         </div>
     </nav>
 
-    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-4 pb-20">
 
         <div class="text-center mb-8">
@@ -172,7 +169,6 @@
             <p class="text-white/40 text-sm mt-2">Real Banking. Real DeFi. Real Finance.</p>
         </div>
 
-        <!-- ===== СТАТУС КОШЕЛЬКА ===== -->
         <div class="glass p-4 px-6 mb-8 max-w-3xl mx-auto flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="status-dot" id="statusDot"></span>
@@ -187,7 +183,6 @@
             </div>
         </div>
 
-        <!-- ===== БАНКОВСКАЯ СТАТИСТИКА ===== -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
             <div class="bank-stats text-center">
                 <p class="text-white/30 text-xs uppercase tracking-wider">Total Deposits</p>
@@ -211,7 +206,6 @@
             </div>
         </div>
 
-        <!-- ===== БАНКОВСКИЕ ФУНКЦИИ ===== -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 
             <div class="glass-card" onclick="openModal('savings')">
@@ -264,7 +258,6 @@
 
         </div>
 
-        <!-- ===== ТРАНЗАКЦИИ ===== -->
         <div class="glass p-6 mt-10 max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-white"><i class="fas fa-history text-cyan-400 mr-2"></i>Recent Transactions</h3>
@@ -292,14 +285,12 @@
             </div>
         </div>
 
-        <!-- ===== ФУТЕР ===== -->
         <div class="text-center text-white/10 text-xs py-6 mt-6 border-t border-white/5">
             &copy; 2026 USMT — USMTPAY + USMTBANK. All rights reserved.
             <span class="block mt-1">Powered by Solana — Real DeFi Banking</span>
         </div>
     </div>
 
-    <!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
             <button class="close-btn" onclick="closeModal()">✕</button>
@@ -307,8 +298,6 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT ===== -->
     <script>
         (function() {
             'use strict';
@@ -339,7 +328,7 @@
             let currentNetwork = '';
 
             // ============================================================
-            // ===== РЕАЛЬНЫЙ БАЛАНС ЧЕРЕЗ SOLANA RPC =====
+            // ===== РЕАЛЬНЫЙ БАЛАНС USMT (Token-2022) =====
             // ============================================================
             async function getRealUSMTBalance(address) {
                 if (!address) return 0;
@@ -347,21 +336,53 @@
                     const pubKey = new solanaWeb3.PublicKey(address);
                     const tokenMint = new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress);
                     
+                    // Проверяем Mainnet
                     const connection = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com', 'confirmed');
-                    const tokenAccounts = await connection.getTokenAccountsByOwner(pubKey, {
-                        mint: tokenMint
-                    });
+                    const tokenAccounts = await connection.getTokenAccountsByOwner(
+                        pubKey,
+                        { mint: tokenMint },
+                        { encoding: 'jsonParsed' }
+                    );
                     
-                    if (tokenAccounts.value.length === 0) return 0;
-                    
-                    let totalBalance = 0;
-                    for (const account of tokenAccounts.value) {
-                        const data = account.account.data;
-                        const balanceBuffer = data.slice(64, 72);
-                        const balance = Number(balanceBuffer.readBigInt64LE()) / Math.pow(10, USMT_CONFIG.decimals);
-                        totalBalance += balance;
+                    if (tokenAccounts.value.length > 0) {
+                        let totalBalance = 0;
+                        for (const account of tokenAccounts.value) {
+                            if (account.account.data && account.account.data.parsed && account.account.data.parsed.info) {
+                                const balance = account.account.data.parsed.info.tokenAmount.uiAmount;
+                                totalBalance += balance;
+                            }
+                        }
+                        console.log('✅ Найдено USMT в Mainnet:', totalBalance);
+                        currentNetwork = 'Mainnet';
+                        return totalBalance;
                     }
-                    return totalBalance;
+                    
+                    // Пробуем Devnet
+                    console.log('ℹ️ Проверяем Devnet...');
+                    const devnetConnection = new solanaWeb3.Connection('https://api.devnet.solana.com', 'confirmed');
+                    const devnetAccounts = await devnetConnection.getTokenAccountsByOwner(
+                        pubKey,
+                        { mint: tokenMint },
+                        { encoding: 'jsonParsed' }
+                    );
+                    
+                    if (devnetAccounts.value.length > 0) {
+                        let totalBalance = 0;
+                        for (const account of devnetAccounts.value) {
+                            if (account.account.data && account.account.data.parsed && account.account.data.parsed.info) {
+                                const balance = account.account.data.parsed.info.tokenAmount.uiAmount;
+                                totalBalance += balance;
+                            }
+                        }
+                        console.log('✅ Найдено USMT в Devnet:', totalBalance);
+                        currentNetwork = 'Devnet';
+                        return totalBalance;
+                    }
+                    
+                    console.log('ℹ️ USMT не найден ни в одной сети');
+                    currentNetwork = '';
+                    return 0;
+                    
                 } catch (error) {
                     console.error('❌ Ошибка получения баланса:', error);
                     return 0;
@@ -397,13 +418,21 @@
                 balanceSpan.innerText = usmtBalance.toFixed(3);
                 balanceUSDSpan.innerText = '$' + usdBalance.toFixed(2);
 
-                walletStatus.innerHTML = `
-                    <span class="status-dot"></span>
-                    Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
-                    ${usmtBalance > 0 ? '🔗 ' + usmtBalance.toFixed(3) + ' USMT' : '⚠️ No USMT found'}
-                `;
-
-                document.getElementById('statusDot').style.background = usmtBalance > 0 ? '#00ff88' : '#ff4444';
+                if (usmtBalance > 0) {
+                    walletStatus.innerHTML = `
+                        <span class="status-dot"></span>
+                        Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
+                        🔗 ${usmtBalance.toFixed(3)} USMT ${currentNetwork ? '· ' + currentNetwork : ''}
+                    `;
+                    document.getElementById('statusDot').style.background = '#00ff88';
+                } else {
+                    walletStatus.innerHTML = `
+                        <span class="status-dot"></span>
+                        Connected: ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}
+                        ⚠️ No USMT found
+                    `;
+                    document.getElementById('statusDot').style.background = '#ff4444';
+                }
             }
 
             // ============================================================
@@ -456,21 +485,9 @@
             }
 
             // ============================================================
-            // ===== РЕАЛЬНЫЙ ПОИСК БАЛАНСА В БАНКОВСКИХ ФУНКЦИЯХ =====
-            // ============================================================
-            function getCurrentBalance() {
-                return usmtBalance;
-            }
-
-            function getCurrentPrice() {
-                return usmtPrice;
-            }
-
-            // ============================================================
-            // ===== БАНКОВСКИЕ ФУНКЦИИ (ВСЕ РАБОТАЮТ) =====
+            // ===== БАНКОВСКИЕ ФУНКЦИИ =====
             // ============================================================
 
-            // --- 1. SAVINGS VAULT ---
             window.executeSavings = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -503,7 +520,6 @@
                 updateBalance();
             };
 
-            // --- 2. LENDING ---
             window.executeLending = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -534,7 +550,6 @@
                 document.getElementById('lendingResult').classList.add('show');
             };
 
-            // --- 3. USMTPAY PAYMENTS ---
             window.executePayment = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -567,7 +582,6 @@
                 updateBalance();
             };
 
-            // --- 4. MULTI-SIG ---
             window.executeMultisig = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -596,7 +610,6 @@
                 document.getElementById('multisigResult').classList.add('show');
             };
 
-            // --- 5. CROSS-CHAIN BRIDGE ---
             window.executeBridge = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -629,7 +642,6 @@
                 updateBalance();
             };
 
-            // --- 6. USMT CARD ---
             window.executeCard = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -651,7 +663,6 @@
                 document.getElementById('cardResult').classList.add('show');
             };
 
-            // --- 7. RECURRING PAYMENTS ---
             window.executeSubscription = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -680,7 +691,6 @@
                 document.getElementById('subResult').classList.add('show');
             };
 
-            // --- 8. USMT SWAP ---
             window.executeSwap = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
@@ -930,11 +940,11 @@
 
                 console.log('%c🏦 USMTPAY + USMTBANK — Real Banking', 'font-size:20px; font-weight:bold; color:#A855F7;');
                 console.log('%c🔗 Token: 9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', 'font-size:14px; color:#00D4FF;');
-                console.log('%c✅ Все функции работают с реальным балансом!', 'font-size:12px; color:#00ff88;');
+                console.log('%c✅ Исправлен парсинг Token-2022', 'font-size:12px; color:#00ff88;');
             });
 
         })();
     </script>
 
 </body>
-</html>
+    </html>
