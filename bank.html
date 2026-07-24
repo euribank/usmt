@@ -24,13 +24,10 @@
             background: rgba(6, 8, 15, 0.92); z-index: -1;
         }
 
-        /* ===== GLASS ===== */
         .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); border-radius: 32px; }
         .glass-card {
-            background: rgba(255,255,255,0.02);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 20px;
+            background: rgba(255,255,255,0.02); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.04); border-radius: 20px;
             transition: all 0.3s ease;
             cursor: pointer;
             padding: 20px 16px;
@@ -75,7 +72,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* ===== TOAST ===== */
         .toast {
             position: fixed; top: 20px; right: 20px; z-index: 300;
             padding: 16px 24px; border-radius: 16px; font-size: 0.9rem; font-weight: 500;
@@ -88,7 +84,6 @@
         .toast.error { border-color: rgba(255,80,80,0.2); }
         .toast.info { border-color: rgba(0,212,255,0.2); }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); z-index: 200;
@@ -122,7 +117,6 @@
         }
         .modal-box .result-box.show { display: block; }
 
-        /* ===== STATUS ===== */
         .status-dot {
             display: inline-block; width: 8px; height: 8px; background: #ff4444;
             border-radius: 50%; animation: pulse-dot 1.8s infinite;
@@ -146,7 +140,6 @@
     </video>
     <div class="overlay-dark"></div>
 
-    <!-- ===== NAVIGATION ===== -->
     <nav class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
         <a href="index.html" class="flex items-center gap-2 text-2xl font-bold">
             <span class="gradient-text">USMT</span>
@@ -159,7 +152,6 @@
         </div>
     </nav>
 
-    <!-- ===== MAIN ===== -->
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-4 pb-20">
 
         <div class="text-center mb-8">
@@ -171,7 +163,6 @@
             <p class="text-white/40 text-sm mt-2">Real Banking. Real DeFi. Real Finance.</p>
         </div>
 
-        <!-- ===== STATUS BAR ===== -->
         <div class="glass p-4 px-6 mb-8 max-w-3xl mx-auto flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="status-dot" id="statusDot"></span>
@@ -186,7 +177,6 @@
             </div>
         </div>
 
-        <!-- ===== STATS ===== -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
             <div class="bank-stats text-center">
                 <p class="text-white/30 text-xs uppercase tracking-wider">Total Deposits</p>
@@ -210,7 +200,6 @@
             </div>
         </div>
 
-        <!-- ===== SERVICES ===== -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="glass-card" onclick="openModal('savings')">
                 <div class="service-icon text-purple-400"><i class="fas fa-piggy-bank text-3xl"></i></div>
@@ -254,7 +243,6 @@
             </div>
         </div>
 
-        <!-- ===== TRANSACTIONS ===== -->
         <div class="glass p-6 mt-10 max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-white"><i class="fas fa-history text-cyan-400 mr-2"></i>Recent Transactions</h3>
@@ -288,7 +276,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
             <button class="close-btn" onclick="closeModal()">✕</button>
@@ -326,62 +313,48 @@
             let usmtPrice = 0.25;
 
             // ============================================================
-            // ===== РЕАЛЬНЫЙ БАЛАНС ЧЕРЕЗ PHANTOM (РАБОТАЕТ ВСЕГДА) =====
+            // ===== ПОЛУЧЕНИЕ БАЛАНСА (АВТОМАТИЧЕСКИЙ ПОИСК ВО ВСЕХ СЕТЯХ) =====
             // ============================================================
             async function getRealUSMTBalance(address) {
                 if (!address) return 0;
 
-                try {
-                    // Создаём подключение через Phantom (работает без CORS)
-                    const connection = new solanaWeb3.Connection(
-                        'https://api.mainnet-beta.solana.com',
-                        'confirmed'
-                    );
+                // Список сетей для проверки
+                const networks = [
+                    { name: 'Mainnet', url: 'https://api.mainnet-beta.solana.com' },
+                    { name: 'Devnet', url: 'https://api.devnet.solana.com' },
+                    { name: 'Testnet', url: 'https://api.testnet.solana.com' }
+                ];
 
+                try {
                     const pubKey = new solanaWeb3.PublicKey(address);
                     const tokenMint = new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress);
 
-                    const tokenAccounts = await connection.getTokenAccountsByOwner(
-                        pubKey,
-                        { mint: tokenMint },
-                        { encoding: 'jsonParsed' }
-                    );
+                    for (const net of networks) {
+                        try {
+                            const connection = new solanaWeb3.Connection(net.url, 'confirmed');
+                            const tokenAccounts = await connection.getTokenAccountsByOwner(
+                                pubKey,
+                                { mint: tokenMint },
+                                { encoding: 'jsonParsed' }
+                            );
 
-                    if (!tokenAccounts.value || tokenAccounts.value.length === 0) {
-                        // Пробуем Devnet
-                        const devnetConnection = new solanaWeb3.Connection(
-                            'https://api.devnet.solana.com',
-                            'confirmed'
-                        );
-                        const devnetAccounts = await devnetConnection.getTokenAccountsByOwner(
-                            pubKey,
-                            { mint: tokenMint },
-                            { encoding: 'jsonParsed' }
-                        );
-
-                        if (!devnetAccounts.value || devnetAccounts.value.length === 0) {
-                            console.log('ℹ️ USMT не найден');
-                            return 0;
-                        }
-
-                        let total = 0;
-                        for (const acc of devnetAccounts.value) {
-                            if (acc.account.data && acc.account.data.parsed && acc.account.data.parsed.info) {
-                                total += acc.account.data.parsed.info.tokenAmount.uiAmount || 0;
+                            if (tokenAccounts.value && tokenAccounts.value.length > 0) {
+                                let total = 0;
+                                for (const acc of tokenAccounts.value) {
+                                    if (acc.account.data && acc.account.data.parsed && acc.account.data.parsed.info) {
+                                        total += acc.account.data.parsed.info.tokenAmount.uiAmount || 0;
+                                    }
+                                }
+                                console.log(`✅ Найдено ${total} USMT в сети ${net.name}`);
+                                return total;
                             }
+                        } catch (e) {
+                            console.log(`⚠️ Ошибка при проверке ${net.name}:`, e.message);
                         }
-                        console.log('✅ Найдено в Devnet:', total);
-                        return total;
                     }
 
-                    let total = 0;
-                    for (const acc of tokenAccounts.value) {
-                        if (acc.account.data && acc.account.data.parsed && acc.account.data.parsed.info) {
-                            total += acc.account.data.parsed.info.tokenAmount.uiAmount || 0;
-                        }
-                    }
-                    console.log('✅ Найдено в Mainnet:', total);
-                    return total;
+                    console.log('ℹ️ USMT не найден ни в одной сети');
+                    return 0;
 
                 } catch (error) {
                     console.error('❌ Ошибка получения баланса:', error);
@@ -940,7 +913,7 @@
 
                 console.log('%c🏦 USMTPAY + USMTBANK — Real Banking', 'font-size:20px; font-weight:bold; color:#A855F7;');
                 console.log('%c🔗 Token: 9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', 'font-size:14px; color:#00D4FF;');
-                console.log('%c✅ Работает через Phantom напрямую', 'font-size:12px; color:#00ff88;');
+                console.log('%c✅ Автоматический поиск баланса во всех сетях', 'font-size:12px; color:#00ff88;');
             });
 
         })();
