@@ -165,6 +165,7 @@
 </head>
 <body>
 
+    <!-- ===== ВИДЕО ===== -->
     <video id="bg-video" autoplay muted loop playsinline>
         <source src="hero-bg.mp4" type="video/mp4" />
     </video>
@@ -172,6 +173,7 @@
 
     <button class="ai-chat-btn" id="aiChatBtn"><i class="fas fa-robot"></i> AI Advisor</button>
 
+    <!-- ===== ВЕРХНЯЯ БЕГУЩАЯ СТРОКА ===== -->
     <div class="marquee-container">
         <div class="marquee-track">
             <span><i class="fas fa-cube text-cyan-400"></i> USMT — 100+ Premium Services + Real Balance</span>
@@ -187,10 +189,10 @@
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10">
 
-        <!-- ===== HERO С ЛОГОТИПОМ (ИСПРАВЛЕННАЯ) ===== -->
+        <!-- ===== HERO С ЛОГОТИПОМ (ИСПРАВЛЕННЫЙ ПУТЬ) ===== -->
         <div class="text-center">
             <div class="flex flex-col items-center justify-center gap-3 mb-2">
-                <img src="usmt-logo.png" alt="USMT Logo" 
+                <img src="usmt_logo.png" alt="USMT Logo" 
                      class="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]" 
                      onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
                 <div id="logoFallback" style="display: none;" class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-purple-500 to-cyan-400 flex items-center justify-center text-4xl md:text-5xl font-black text-white shadow-lg shadow-purple-500/20">
@@ -235,6 +237,7 @@
             </div>
         </div>
 
+        <!-- ===== ОПИСАНИЕ ===== -->
         <div class="glass p-6 md:p-10 mt-8 text-center max-w-5xl mx-auto">
             <p class="text-white/70 text-sm md:text-base leading-relaxed font-light">
                 <strong class="text-cyan-300">USMT</strong> — the most comprehensive premium finance ecosystem on Solana.
@@ -252,6 +255,7 @@
             </p>
         </div>
 
+        <!-- ===== СТАТИСТИКА ===== -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mt-8 max-w-5xl mx-auto">
             <div class="glass-card p-4 text-center"><div class="stat-number text-white" id="totalSupply">10B</div><div class="stat-label">Supply</div></div>
             <div class="glass-card p-4 text-center"><div class="stat-number text-green-300" id="displayPrice">$0.25</div><div class="stat-label">Price</div></div>
@@ -260,7 +264,7 @@
             <div class="glass-card p-4 text-center"><div class="stat-number text-purple-300" id="holdersCount">1,234</div><div class="stat-label">Holders</div></div>
         </div>
 
-        <!-- КОШЕЛЁК -->
+        <!-- ===== КОШЕЛЁК ===== -->
         <div class="glass p-6 md:p-8 mt-8 max-w-3xl mx-auto">
             <div class="flex flex-col md:flex-row items-center justify-center gap-4">
                 <button id="connectWallet" class="btn-primary w-full md:w-auto flex items-center justify-center gap-3">
@@ -283,7 +287,7 @@
             </div>
         </div>
 
-        <!-- ВИРТУАЛЬНАЯ КАРТА -->
+        <!-- ===== ВИРТУАЛЬНАЯ КАРТА ===== -->
         <div class="glass p-6 md:p-8 mt-8 max-w-4xl mx-auto">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
@@ -327,6 +331,7 @@
             </div>
         </div>
 
+        <!-- ===== КНОПКИ ДЕЙСТВИЙ ===== -->
         <div class="flex flex-wrap justify-center gap-2 md:gap-3 mt-6">
             <button class="btn-primary text-sm flex items-center gap-2" onclick="openModal('buy')"><i class="fas fa-arrow-up"></i> Buy USMT</button>
             <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('sell')"><i class="fas fa-arrow-down"></i> Sell</button>
@@ -336,27 +341,28 @@
             <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('ai-trade')"><i class="fas fa-robot"></i> AI Trade</button>
         </div>
 
+        <!-- ===== КАТЕГОРИЯ 1: PREMIUM ASSETS ===== -->
         <div class="mt-12">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-gem text-cyan-400 mr-2"></i> Premium Assets
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('gems')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('gems')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-gem"></i></div>
                     <div class="service-title">Gems &amp; Metals</div>
                     <div class="service-desc">Gold, Silver, Diamonds</div>
                 </div>
-                <div class="glass-card" onclick="openModal('jets')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('jets')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-plane"></i></div>
                     <div class="service-title">Private Jets</div>
                     <div class="service-desc">Global charter service</div>
                 </div>
-                <div class="glass-card" onclick="openModal('yachts')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('yachts')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-blue-400"><i class="fas fa-ship"></i></div>
                     <div class="service-title">Yachts</div>
                     <div class="service-desc">Superyacht rentals</div>
                 </div>
-                <div class="glass-card" onclick="openModal('real-estate')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('real-estate')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-rose-400"><i class="fas fa-building"></i></div>
                     <div class="service-title">Real Estate</div>
                     <div class="service-desc">Global properties</div>
@@ -364,27 +370,28 @@
             </div>
         </div>
 
+        <!-- ===== КАТЕГОРИЯ 2: FINANCIAL INSTRUMENTS ===== -->
         <div class="mt-8">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-chart-pie text-purple-400 mr-2"></i> Financial Instruments
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('fiat-swaps')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('fiat-swaps')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.png') center/cover no-repeat;">
                     <div class="service-icon text-green-400"><i class="fas fa-exchange-alt"></i></div>
                     <div class="service-title">Fiat Swaps</div>
                     <div class="service-desc">USD, EUR, AED, SAR</div>
                 </div>
-                <div class="glass-card" onclick="openModal('stocks')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('stocks')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-chart-pie"></i></div>
                     <div class="service-title">Stocks &amp; ETFs</div>
                     <div class="service-desc">Global markets</div>
                 </div>
-                <div class="glass-card" onclick="openModal('shariah')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('shariah')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.png') center/cover no-repeat;">
                     <div class="service-icon text-emerald-400"><i class="fas fa-mosque"></i></div>
                     <div class="service-title">Shariah-Compliant</div>
                     <div class="service-desc">Sukuk, Islamic funds</div>
                 </div>
-                <div class="glass-card" onclick="openModal('usmtpay')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('usmtpay')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
                     <div class="service-icon text-cyan-400"><i class="fas fa-university"></i></div>
                     <div class="service-title">USMTPAY + BANK</div>
                     <div class="service-desc">Decentralized banking</div>
@@ -392,27 +399,28 @@
             </div>
         </div>
 
+        <!-- ===== КАТЕГОРИЯ 3: AI & TECHNOLOGY ===== -->
         <div class="mt-8">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-robot text-blue-400 mr-2"></i> AI &amp; Technology
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('ai-trade')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('ai-trade')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-blue-400"><i class="fas fa-robot"></i></div>
                     <div class="service-title">AI Trading</div>
                     <div class="service-desc">Smart algorithms</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-portfolio')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('ai-portfolio')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-indigo-400"><i class="fas fa-chart-line"></i></div>
                     <div class="service-title">AI Portfolio</div>
                     <div class="service-desc">Automated management</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-predictions')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('ai-predictions')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-sky-400"><i class="fas fa-brain"></i></div>
                     <div class="service-title">AI Predictions</div>
                     <div class="service-desc">Market forecasting</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-assistant')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.jpg') center/cover no-repeat;">
+                <div class="glass-card" onclick="openModal('ai-assistant')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-comment-dots"></i></div>
                     <div class="service-title">AI Assistant</div>
                     <div class="service-desc">24/7 support</div>
@@ -420,6 +428,65 @@
             </div>
         </div>
 
+        <!-- ===== КАТЕГОРИЯ 4: PAYMENTS & BANKING ===== -->
+        <div class="mt-8">
+            <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
+                <i class="fas fa-credit-card text-green-400 mr-2"></i> Payments &amp; Banking
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <div class="glass-card" onclick="openModal('virtual-card')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                    <div class="service-icon text-green-400"><i class="fas fa-credit-card"></i></div>
+                    <div class="service-title">Virtual Cards</div>
+                    <div class="service-desc">Instant issuance</div>
+                </div>
+                <div class="glass-card" onclick="openModal('api-key')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                    <div class="service-icon text-cyan-400"><i class="fas fa-code"></i></div>
+                    <div class="service-title">API Banking</div>
+                    <div class="service-desc">REST API access</div>
+                </div>
+                <div class="glass-card" onclick="openModal('cross-border')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                    <div class="service-icon text-purple-400"><i class="fas fa-globe"></i></div>
+                    <div class="service-title">Cross-Border</div>
+                    <div class="service-desc">Global payments</div>
+                </div>
+                <div class="glass-card" onclick="openModal('merchant')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                    <div class="service-icon text-yellow-400"><i class="fas fa-store"></i></div>
+                    <div class="service-title">Merchant Solutions</div>
+                    <div class="service-desc">Payment gateway</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== КАТЕГОРИЯ 5: LIFESTYLE & LUXURY ===== -->
+        <div class="mt-8">
+            <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
+                <i class="fas fa-crown text-yellow-400 mr-2"></i> Lifestyle &amp; Luxury
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <div class="glass-card" onclick="openModal('concierge')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                    <div class="service-icon text-amber-400"><i class="fas fa-concierge-bell"></i></div>
+                    <div class="service-title">Concierge</div>
+                    <div class="service-desc">24/7 luxury service</div>
+                </div>
+                <div class="glass-card" onclick="openModal('art')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                    <div class="service-icon text-pink-400"><i class="fas fa-palette"></i></div>
+                    <div class="service-title">Art &amp; Collectibles</div>
+                    <div class="service-desc">Invest in masterpieces</div>
+                </div>
+                <div class="glass-card" onclick="openModal('events')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                    <div class="service-icon text-red-400"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="service-title">Private Events</div>
+                    <div class="service-desc">Exclusive experiences</div>
+                </div>
+                <div class="glass-card" onclick="openModal('travel')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                    <div class="service-icon text-teal-400"><i class="fas fa-umbrella-beach"></i></div>
+                    <div class="service-title">Luxury Travel</div>
+                    <div class="service-desc">5-star experiences</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ПАРТНЁРЫ ===== -->
         <div class="glass p-6 mt-10 max-w-5xl mx-auto">
             <p class="text-center text-white/20 text-xs uppercase tracking-[0.3em] mb-5">Trusted Partners</p>
             <div class="flex flex-wrap justify-center items-center gap-6 md:gap-10">
@@ -432,6 +499,7 @@
             </div>
         </div>
 
+        <!-- ===== ЯЗЫКИ ===== -->
         <div class="flex flex-wrap justify-center gap-2 mt-10">
             <button class="lang-btn active" data-lang="en">🇬🇧 EN</button>
             <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
@@ -443,6 +511,7 @@
             <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
         </div>
 
+        <!-- ===== НИЖНЯЯ БЕГУЩАЯ СТРОКА ===== -->
         <div class="marquee-container mt-10">
             <div class="marquee-track">
                 <span><i class="fas fa-bolt text-yellow-400"></i> 100+ Services · Gems · Metals · Jets · Yachts · Real Estate</span>
@@ -454,6 +523,7 @@
             </div>
         </div>
 
+        <!-- ===== ФУТЕР ===== -->
         <div class="footer text-center py-6 mt-6">
             &copy; 2026 USMT — Unified Solana Token. 100+ Premium Financial Services.
             <span class="block text-white/10 text-xs mt-1">
@@ -514,14 +584,10 @@
                     const pubKey = new solanaWeb3.PublicKey(address);
                     const tokenMint = new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress);
 
-                    // Helius RPC (стабильнее и быстрее)
-                    const HELIUS_RPC = 'https://mainnet.helius-rpc.com/?api-key=';
-                    // Если у тебя нет API ключа, используем публичный RPC
                     const rpcUrl = 'https://api.mainnet-beta.solana.com';
                     
                     const connection = new solanaWeb3.Connection(rpcUrl, 'confirmed');
 
-                    // Получаем все токен-аккаунты
                     const tokenAccounts = await connection.getTokenAccountsByOwner(
                         pubKey,
                         { mint: tokenMint },
@@ -531,7 +597,6 @@
                     console.log('🔍 Token accounts found:', tokenAccounts.value.length);
 
                     if (tokenAccounts.value.length === 0) {
-                        // Пробуем Devnet
                         const devnetConnection = new solanaWeb3.Connection('https://api.devnet.solana.com', 'confirmed');
                         const devnetAccounts = await devnetConnection.getTokenAccountsByOwner(
                             pubKey,
@@ -549,7 +614,6 @@
                         return { balance: 0, network: '' };
                     }
 
-                    // Берём баланс из первого аккаунта
                     const parsedData = tokenAccounts.value[0].account.data;
                     if (parsedData && parsedData.parsed && parsedData.parsed.info && parsedData.parsed.info.tokenAmount) {
                         const balance = parsedData.parsed.info.tokenAmount.uiAmount;
@@ -562,7 +626,6 @@
                 } catch (error) {
                     console.error('❌ Ошибка:', error);
                     
-                    // Пробуем Devnet как запасной вариант
                     try {
                         const devnetConnection = new solanaWeb3.Connection('https://api.devnet.solana.com', 'confirmed');
                         const devnetAccounts = await devnetConnection.getTokenAccountsByOwner(
@@ -743,7 +806,7 @@
             };
 
             // ============================================================
-            // ===== МОДАЛЬНОЕ ОКНО (ТОЛЬКО БАЗОВЫЕ ФУНКЦИИ) =====
+            // ===== МОДАЛЬНОЕ ОКНО =====
             // ============================================================
             window.openModal = function(type) {
                 if (!walletAddress && type !== 'install-wallet') {
@@ -941,7 +1004,7 @@
             });
 
             // ============================================================
-            // ===== ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКОВ (СОКРАЩЁННЫЙ) =====
+            // ===== ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКОВ =====
             // ============================================================
             const langBtns = document.querySelectorAll('.lang-btn');
             const translations = {
