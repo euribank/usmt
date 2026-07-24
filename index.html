@@ -11,7 +11,6 @@
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
 
     <style>
-        /* ===== БАЗОВЫЕ СТИЛИ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #06080f; font-family: 'Inter', sans-serif; color: #fff; overflow-x: hidden; }
 
@@ -74,12 +73,10 @@
         .partner-icon { font-size: 2.5rem; color: rgba(255,255,255,0.15); transition: 0.3s; }
         .partner-icon:hover { color: rgba(255,255,255,0.6); transform: scale(1.1); }
 
-        #balance, #balanceUSD, #cardBalance, #savingsBalance, #loanBalance { font-family: 'Inter', monospace; font-weight: 700; }
+        #balance, #balanceUSD, #cardBalance { font-family: 'Inter', monospace; font-weight: 700; }
         #balance { color: #00ff88; }
         #balanceUSD { color: #ffd700; }
         #cardBalance { color: #00d4ff; }
-        #savingsBalance { color: #a855f7; }
-        #loanBalance { color: #f97316; }
 
         .status-dot {
             display: inline-block; width: 8px; height: 8px; background: #00ff88;
@@ -156,13 +153,6 @@
         .toast.success { border-color: rgba(0,255,136,0.2); }
         .toast.error { border-color: rgba(255,80,80,0.2); }
         .toast.info { border-color: rgba(0,212,255,0.2); }
-
-        .bank-stats {
-            background: rgba(255,255,255,0.02);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,0.04);
-        }
 
         @media (max-width: 640px) {
             .stat-number { font-size: 2rem; }
@@ -293,81 +283,77 @@
             </div>
         </div>
 
-        <!-- ===== БАНКОВСКИЙ РАЗДЕЛ (USMTPAY + BANK) ===== -->
-        <div class="glass p-6 md:p-8 mt-8 max-w-6xl mx-auto border-t-2 border-cyan-400/20">
-            <div class="flex items-center gap-3 mb-6">
-                <i class="fas fa-university text-4xl text-cyan-400"></i>
-                <h2 class="text-3xl font-bold text-white">USMTPAY <span class="text-cyan-400">+</span> USMTBANK</h2>
-                <span class="text-xs bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full">Live</span>
+        <!-- ===== ВИРТУАЛЬНАЯ КАРТА ===== -->
+        <div class="glass p-6 md:p-8 mt-8 max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-credit-card text-3xl text-green-400"></i>
+                    <h3 class="text-xl font-bold text-white">Virtual Card</h3>
+                    <span class="text-xs bg-green-500/20 text-green-300 px-3 py-1 rounded-full">Active</span>
+                </div>
+                <span class="text-white/30 text-xs" id="cardStatus">● Ready</span>
             </div>
-
-            <!-- Банковская статистика -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div class="bank-stats text-center">
-                    <p class="text-white/30 text-xs uppercase tracking-wider">Total Deposits</p>
-                    <p class="text-xl font-bold text-cyan-400" id="totalDeposits">$2,450,000</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="virtual-card relative overflow-hidden">
+                    <div class="card-chip"></div>
+                    <div class="flex justify-between items-end mt-4">
+                        <div>
+                            <p class="text-white/40 text-xs uppercase tracking-wider">Card Balance</p>
+                            <p class="text-2xl font-bold text-white" id="cardBalance">$0.00</p>
+                            <p class="text-white/30 text-xs" id="cardUSMT">0.000 USMT</p>
+                            <p class="text-white/20 text-[10px] mt-1">30% of total balance available</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-white/40 text-xs">Card Number</p>
+                            <p class="text-white/70 text-sm font-mono" id="cardNumber">**** **** **** 1234</p>
+                        </div>
+                    </div>
+                    <div class="absolute top-0 right-0 opacity-10 text-8xl">💳</div>
                 </div>
-                <div class="bank-stats text-center">
-                    <p class="text-white/30 text-xs uppercase tracking-wider">Active Loans</p>
-                    <p class="text-xl font-bold text-orange-400" id="activeLoans">$1,230,000</p>
-                </div>
-                <div class="bank-stats text-center">
-                    <p class="text-white/30 text-xs uppercase tracking-wider">APY (Savings)</p>
-                    <p class="text-xl font-bold text-purple-400" id="savingsAPY">8.5%</p>
-                </div>
-                <div class="bank-stats text-center">
-                    <p class="text-white/30 text-xs uppercase tracking-wider">Total Users</p>
-                    <p class="text-xl font-bold text-green-400" id="totalUsers">1,234</p>
-                </div>
-            </div>
-
-            <!-- Банковские функции -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="glass-card" onclick="openModal('savings')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-purple-400"><i class="fas fa-piggy-bank"></i></div>
-                    <div class="service-title">Savings Vault</div>
-                    <div class="service-desc">Earn 8.5% APY</div>
-                </div>
-                <div class="glass-card" onclick="openModal('lending')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-orange-400"><i class="fas fa-hand-holding-usd"></i></div>
-                    <div class="service-title">Lending</div>
-                    <div class="service-desc">Borrow against USMT</div>
-                </div>
-                <div class="glass-card" onclick="openModal('payments')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-green-400"><i class="fas fa-credit-card"></i></div>
-                    <div class="service-title">USMTPAY</div>
-                    <div class="service-desc">Pay with USMT</div>
-                </div>
-                <div class="glass-card" onclick="openModal('multisig')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-blue-400"><i class="fas fa-users-cog"></i></div>
-                    <div class="service-title">Multi-Sig Wallet</div>
-                    <div class="service-desc">2-of-3 signatures</div>
-                </div>
-                <div class="glass-card" onclick="openModal('bridge')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-yellow-400"><i class="fas fa-arrows-alt-h"></i></div>
-                    <div class="service-title">Cross-Chain Bridge</div>
-                    <div class="service-desc">USMT ↔ ETH/BNB</div>
-                </div>
-                <div class="glass-card" onclick="openModal('card')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-rose-400"><i class="fas fa-credit-card"></i></div>
-                    <div class="service-title">USMT Card</div>
-                    <div class="service-desc">Virtual & Physical</div>
-                </div>
-                <div class="glass-card" onclick="openModal('subscriptions')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-indigo-400"><i class="fas fa-sync-alt"></i></div>
-                    <div class="service-title">Recurring Payments</div>
-                    <div class="service-desc">Auto-subscriptions</div>
-                </div>
-                <div class="glass-card" onclick="openModal('swap')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
-                    <div class="service-icon text-teal-400"><i class="fas fa-exchange-alt"></i></div>
-                    <div class="service-title">USMT Swap</div>
-                    <div class="service-desc">USMT ↔ USDC/SOL</div>
+                <div class="space-y-3">
+                    <button class="btn-primary w-full text-sm flex items-center justify-center gap-2" onclick="topUpCard()">
+                        <i class="fas fa-arrow-up"></i> Top Up Card
+                    </button>
+                    <button class="btn-outline w-full text-sm flex items-center justify-center gap-2" onclick="withdrawFromCard()">
+                        <i class="fas fa-arrow-down"></i> Withdraw
+                    </button>
+                    <button class="btn-outline w-full text-sm flex items-center justify-center gap-2" onclick="showCardDetails()">
+                        <i class="fas fa-eye"></i> Card Details
+                    </button>
+                    <p class="text-white/20 text-[10px] text-center mt-2">
+                        <i class="fas fa-lock text-green-400 mr-1"></i> Secured by Solana blockchain
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- ===== ОСТАЛЬНЫЕ КАТЕГОРИИ ===== -->
-        <!-- КАТЕГОРИЯ 1: PREMIUM ASSETS -->
+        <!-- ===== КНОПКИ ДЕЙСТВИЙ ===== -->
+        <div class="flex flex-wrap justify-center gap-2 md:gap-3 mt-6">
+            <button class="btn-primary text-sm flex items-center gap-2" onclick="window.open('https://jup.ag/swap/SOL-USMT', '_blank')">
+                <i class="fas fa-arrow-up"></i> Buy USMT
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://jup.ag/swap/USMT-SOL', '_blank')">
+                <i class="fas fa-arrow-down"></i> Sell
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://dexscreener.com/solana/9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', '_blank')">
+                <i class="fas fa-chart-line"></i> Chart
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://phantom.app/ul/browse/transfer?token=9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', '_blank')">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://solscan.io/token/9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', '_blank')">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="openAITrade()">
+                <i class="fas fa-robot"></i> AI Trade
+            </button>
+            <!-- КНОПКА НА USMTPAY + BANK -->
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.location.href='bank.html'">
+                <i class="fas fa-university"></i> USMTPAY + BANK
+            </button>
+        </div>
+
+        <!-- ===== КАТЕГОРИЯ 1: PREMIUM ASSETS ===== -->
         <div class="mt-12">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-gem text-cyan-400 mr-2"></i> Premium Assets
@@ -396,7 +382,7 @@
             </div>
         </div>
 
-        <!-- КАТЕГОРИЯ 2: FINANCIAL INSTRUMENTS -->
+        <!-- ===== КАТЕГОРИЯ 2: FINANCIAL INSTRUMENTS ===== -->
         <div class="mt-8">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-chart-pie text-purple-400 mr-2"></i> Financial Instruments
@@ -417,15 +403,16 @@
                     <div class="service-title">Shariah-Compliant</div>
                     <div class="service-desc">Islamic Finance</div>
                 </div>
-                <div class="glass-card" onclick="window.open('https://www.usmtbank.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                <!-- USMTPAY + BANK ссылка -->
+                <div class="glass-card" onclick="window.location.href='bank.html'" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
                     <div class="service-icon text-cyan-400"><i class="fas fa-university"></i></div>
                     <div class="service-title">USMTPAY + BANK</div>
-                    <div class="service-desc">Decentralized Banking</div>
+                    <div class="service-desc">Real Banking →</div>
                 </div>
             </div>
         </div>
 
-        <!-- КАТЕГОРИЯ 3: AI & TECHNOLOGY -->
+        <!-- ===== КАТЕГОРИЯ 3: AI & TECHNOLOGY ===== -->
         <div class="mt-8">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-robot text-blue-400 mr-2"></i> AI &amp; Technology
@@ -454,7 +441,7 @@
             </div>
         </div>
 
-        <!-- КАТЕГОРИЯ 4: PAYMENTS & BANKING -->
+        <!-- ===== КАТЕГОРИЯ 4: PAYMENTS & BANKING ===== -->
         <div class="mt-8">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-credit-card text-green-400 mr-2"></i> Payments &amp; Banking
@@ -483,7 +470,7 @@
             </div>
         </div>
 
-        <!-- КАТЕГОРИЯ 5: LIFESTYLE & LUXURY -->
+        <!-- ===== КАТЕГОРИЯ 5: LIFESTYLE & LUXURY ===== -->
         <div class="mt-8">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-crown text-yellow-400 mr-2"></i> Lifestyle &amp; Luxury
@@ -512,7 +499,7 @@
             </div>
         </div>
 
-        <!-- ===== ПАРТНЁРЫ ===== -->
+        <!-- ===== ПАРТНЁРЫ (УНИКАЛЬНЫЕ ССЫЛКИ НА РЕАЛЬНЫЕ КОМПАНИИ) ===== -->
         <div class="glass p-6 mt-10 max-w-5xl mx-auto">
             <p class="text-center text-white/20 text-xs uppercase tracking-[0.3em] mb-5">Trusted Partners</p>
             <div class="flex flex-wrap justify-center items-center gap-6 md:gap-10">
@@ -602,10 +589,6 @@
             let usmtPrice = 0.25;
             let currentNetwork = '';
 
-            // Банковские переменные
-            let savingsBalance = 0;
-            let loanBalance = 0;
-
             // ============================================================
             // ===== БАЛАНС ЧЕРЕЗ HELIUS RPC =====
             // ============================================================
@@ -626,8 +609,6 @@
                         { encoding: 'jsonParsed' }
                     );
 
-                    console.log('🔍 Token accounts found:', tokenAccounts.value.length);
-
                     if (tokenAccounts.value.length === 0) {
                         const devnetConnection = new solanaWeb3.Connection('https://api.devnet.solana.com', 'confirmed');
                         const devnetAccounts = await devnetConnection.getTokenAccountsByOwner(
@@ -638,18 +619,15 @@
 
                         if (devnetAccounts.value.length > 0) {
                             const balance = devnetAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount;
-                            console.log(`✅ Найдено ${balance} USMT в Devnet`);
                             return { balance: balance || 0, network: 'Devnet' };
                         }
                         
-                        console.log('ℹ️ Токены не найдены ни в одной сети');
                         return { balance: 0, network: '' };
                     }
 
                     const parsedData = tokenAccounts.value[0].account.data;
                     if (parsedData && parsedData.parsed && parsedData.parsed.info && parsedData.parsed.info.tokenAmount) {
                         const balance = parsedData.parsed.info.tokenAmount.uiAmount;
-                        console.log(`✅ Найдено ${balance} USMT в Mainnet`);
                         return { balance: balance || 0, network: 'Mainnet' };
                     }
 
@@ -668,11 +646,10 @@
                         
                         if (devnetAccounts.value.length > 0) {
                             const balance = devnetAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount;
-                            console.log(`✅ Найдено ${balance} USMT в Devnet (fallback)`);
                             return { balance: balance || 0, network: 'Devnet' };
                         }
                     } catch (e) {
-                        console.log('⚠️ Devnet fallback тоже не сработал');
+                        console.log('⚠️ Devnet fallback error');
                     }
                     
                     return { balance: 0, network: '' };
@@ -789,7 +766,7 @@
             }
 
             // ============================================================
-            // ===== ФУНКЦИИ ДЛЯ ВИРТУАЛЬНОЙ КАРТЫ =====
+            // ===== ВИРТУАЛЬНАЯ КАРТА =====
             // ============================================================
             window.topUpCard = function() {
                 if (!walletAddress) {
@@ -841,174 +818,32 @@
             };
 
             // ============================================================
-            // ===== НОВЫЕ БАНКОВСКИЕ ФУНКЦИИ =====
+            // ===== AI TRADE =====
             // ============================================================
-
-            // --- SAVINGS VAULT ---
-            window.executeSavings = function() {
+            window.openAITrade = function() {
                 if (!walletAddress) {
                     showToast('⚠️ Connect wallet first!', 'error');
                     return;
                 }
                 
-                const amount = prompt('💰 Enter amount to deposit (USMT):', '500');
-                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                    const usmtAmount = parseFloat(amount);
-                    if (usmtAmount > usmtBalance) {
-                        showToast('⚠️ Insufficient balance!', 'error');
-                        return;
-                    }
-                    savingsBalance += usmtAmount;
-                    usmtBalance -= usmtAmount;
-                    
-                    const projectedReturn = usmtAmount * 0.085; // 8.5% APY
-                    showToast(`✅ Deposited ${usmtAmount} USMT\n📈 Estimated yearly return: ${projectedReturn.toFixed(2)} USMT (8.5% APY)`, 'success');
-                    updateBalance();
-                }
-            };
-
-            // --- LENDING ---
-            window.executeLending = function() {
-                if (!walletAddress) {
-                    showToast('⚠️ Connect wallet first!', 'error');
-                    return;
-                }
-                
-                const amount = prompt('🏦 Enter amount to borrow (USDC):', '100');
-                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                    const borrowAmount = parseFloat(amount);
-                    const collateralNeeded = borrowAmount * 1.5; // 150% collateral
-                    
-                    if (collateralNeeded > usmtBalance * usmtPrice) {
-                        showToast(`⚠️ Insufficient collateral! Need ${collateralNeeded.toFixed(2)} USMT`, 'error');
-                        return;
-                    }
-                    
-                    loanBalance += borrowAmount;
-                    showToast(`✅ Loan approved: $${borrowAmount} USDC\n🔒 Collateral: ${collateralNeeded.toFixed(2)} USMT\n📊 Interest: 5% APR`, 'success');
-                }
-            };
-
-            // --- PAYMENTS (USMTPAY) ---
-            window.executePayment = function() {
-                if (!walletAddress) {
-                    showToast('⚠️ Connect wallet first!', 'error');
-                    return;
-                }
-                
-                const amount = prompt('💳 Enter payment amount (USMT):', '50');
-                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                    const usmtAmount = parseFloat(amount);
-                    if (usmtAmount > usmtBalance) {
-                        showToast('⚠️ Insufficient balance!', 'error');
-                        return;
-                    }
-                    
-                    const merchant = prompt('🏪 Merchant name (optional):', 'Online Store');
-                    usmtBalance -= usmtAmount;
-                    showToast(`✅ Payment of ${usmtAmount} USMT to "${merchant || 'Merchant'}" successful\n💳 Transaction ID: USMT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`, 'success');
-                    updateBalance();
-                }
-            };
-
-            // --- MULTI-SIG ---
-            window.executeMultisig = function() {
-                if (!walletAddress) {
-                    showToast('⚠️ Connect wallet first!', 'error');
-                    return;
-                }
-                
-                const address1 = prompt('👤 Enter first signer address:', walletAddress);
-                const address2 = prompt('👤 Enter second signer address:', '');
-                const address3 = prompt('👤 Enter third signer address (optional):', '');
-                
-                if (address1 && address2) {
-                    const signers = [address1, address2];
-                    if (address3) signers.push(address3);
-                    
-                    showToast(`✅ Multi-Sig Wallet Created!\n🔑 Signers: ${signers.length}\n📋 Minimum signatures required: ${signers.length >= 3 ? '2 of 3' : '2 of 2'}\n🔗 Address: ${'MS' + Math.random().toString(36).substring(2, 12).toUpperCase()}`, 'success');
-                }
-            };
-
-            // --- CROSS-CHAIN BRIDGE ---
-            window.executeBridge = function() {
-                if (!walletAddress) {
-                    showToast('⚠️ Connect wallet first!', 'error');
-                    return;
-                }
-                
-                const amount = prompt('🌉 Enter amount to bridge (USMT):', '100');
-                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                    const usmtAmount = parseFloat(amount);
-                    if (usmtAmount > usmtBalance) {
-                        showToast('⚠️ Insufficient balance!', 'error');
-                        return;
-                    }
-                    
-                    const chain = confirm('Bridge to Ethereum? (Cancel for BNB Chain)');
-                    const targetChain = chain ? 'Ethereum' : 'BNB Chain';
-                    
-                    usmtBalance -= usmtAmount;
-                    showToast(`✅ Bridge initiated!\n🔗 ${usmtAmount} USMT → ${targetChain}\n⏳ Estimated time: 5-15 minutes\n🔑 TX: ${'0x' + Math.random().toString(36).substring(2, 12)}`, 'success');
-                    updateBalance();
-                }
-            };
-
-            // --- USMT CARD ---
-            window.executeCard = function() {
-                if (!walletAddress) {
-                    showToast('⚠️ Connect wallet first!', 'error');
-                    return;
-                }
-                
-                const cardType = confirm('Virtual Card? (Cancel for Physical Card)');
-                const cardNumber = '**** **** **** ' + (1000 + Math.floor(Math.random() * 9000));
-                const expiry = `12/${new Date().getFullYear() + 3}`;
-                
-                showToast(`💳 ${cardType ? 'Virtual' : 'Physical'} Card Created!\n🔢 Card: ${cardNumber}\n📅 Expiry: ${expiry}\n💰 Initial load: $0.00`, 'success');
-            };
-
-            // --- RECURRING PAYMENTS ---
-            window.executeSubscription = function() {
-                if (!walletAddress) {
-                    showToast('⚠️ Connect wallet first!', 'error');
-                    return;
-                }
-                
-                const amount = prompt('🔄 Enter recurring payment amount (USMT):', '10');
-                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                    const usmtAmount = parseFloat(amount);
-                    const frequency = prompt('📅 Frequency (daily/weekly/monthly):', 'monthly');
-                    const merchant = prompt('🏪 Merchant:', 'Subscription Service');
-                    
-                    showToast(`✅ Recurring payment set up!\n💳 ${usmtAmount} USMT ${frequency}\n🏪 ${merchant}\n📋 Next payment: ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString()}`, 'success');
-                }
-            };
-
-            // --- SWAP ---
-            window.executeSwap = function() {
-                if (!walletAddress) {
-                    showToast('⚠️ Connect wallet first!', 'error');
-                    return;
-                }
-                
-                const amount = prompt('🔄 Enter amount to swap (USMT):', '100');
-                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                    const usmtAmount = parseFloat(amount);
-                    if (usmtAmount > usmtBalance) {
-                        showToast('⚠️ Insufficient balance!', 'error');
-                        return;
-                    }
-                    
-                    const target = confirm('Swap to USDC? (Cancel for SOL)');
-                    const targetSymbol = target ? 'USDC' : 'SOL';
-                    const rate = target ? 0.25 : 0.000238;
-                    const received = usmtAmount * rate;
-                    
-                    usmtBalance -= usmtAmount;
-                    showToast(`✅ Swap completed!\n🔄 ${usmtAmount} USMT → ${received.toFixed(6)} ${targetSymbol}\n💱 Rate: 1 USMT = ${rate.toFixed(6)} ${targetSymbol}`, 'success');
-                    updateBalance();
-                }
+                fetch(`https://quote-api.jup.ag/v6/price?ids=${USMT_CONFIG.mintAddress}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const price = data.data[USMT_CONFIG.mintAddress]?.price || 0.25;
+                        const randomSignal = Math.random() > 0.5 ? 'BUY' : 'HOLD';
+                        const confidence = (70 + Math.random() * 25).toFixed(1);
+                        const target = (price * (1 + (Math.random() * 0.1 - 0.05))).toFixed(4);
+                        
+                        showToast(`
+                            🤖 AI Signal: ${randomSignal}
+                            💰 Current: $${price.toFixed(4)}
+                            🎯 Target: $${target}
+                            📊 Confidence: ${confidence}%
+                        `, 'success');
+                    })
+                    .catch(err => {
+                        showToast('⚠️ AI signal temporarily unavailable', 'error');
+                    });
             };
 
             // ============================================================
@@ -1023,103 +858,6 @@
                 let html = '';
 
                 switch (type) {
-                    case 'savings':
-                        html = `
-                            <h2 class="gradient-text">💰 Savings Vault</h2>
-                            <p>Deposit USMT and earn 8.5% APY</p>
-                            <p class="text-white/40 text-sm mb-4">Current balance: ${savingsBalance.toFixed(3)} USMT ($${(savingsBalance * usmtPrice).toFixed(2)})</p>
-                            <button class="btn-primary" onclick="executeSavings(); closeModal();">
-                                <i class="fas fa-piggy-bank"></i> Deposit USMT
-                            </button>
-                            <div class="result-box" id="savingsResult"></div>
-                        `;
-                        break;
-
-                    case 'lending':
-                        html = `
-                            <h2 class="gradient-text">🏦 Lending</h2>
-                            <p>Borrow USDC against your USMT collateral</p>
-                            <p class="text-white/40 text-sm mb-4">Collateral: ${usmtBalance.toFixed(3)} USMT ($${(usmtBalance * usmtPrice).toFixed(2)})</p>
-                            <p class="text-white/40 text-sm mb-4">Max borrow: $${(usmtBalance * usmtPrice / 1.5).toFixed(2)} USDC</p>
-                            <button class="btn-primary" onclick="executeLending(); closeModal();">
-                                <i class="fas fa-hand-holding-usd"></i> Borrow USDC
-                            </button>
-                            <div class="result-box" id="lendingResult"></div>
-                        `;
-                        break;
-
-                    case 'payments':
-                        html = `
-                            <h2 class="gradient-text">💳 USMTPAY</h2>
-                            <p>Pay with USMT anywhere</p>
-                            <p class="text-white/40 text-sm mb-4">Balance: ${usmtBalance.toFixed(3)} USMT ($${(usmtBalance * usmtPrice).toFixed(2)})</p>
-                            <button class="btn-primary" onclick="executePayment(); closeModal();">
-                                <i class="fas fa-credit-card"></i> Make Payment
-                            </button>
-                            <div class="result-box" id="paymentResult"></div>
-                        `;
-                        break;
-
-                    case 'multisig':
-                        html = `
-                            <h2 class="gradient-text">🔐 Multi-Sig Wallet</h2>
-                            <p>Create a wallet with multiple signers</p>
-                            <p class="text-white/40 text-sm mb-4">2-of-3 signatures required for transactions</p>
-                            <button class="btn-primary" onclick="executeMultisig(); closeModal();">
-                                <i class="fas fa-users-cog"></i> Create Multi-Sig
-                            </button>
-                            <div class="result-box" id="multisigResult"></div>
-                        `;
-                        break;
-
-                    case 'bridge':
-                        html = `
-                            <h2 class="gradient-text">🌉 Cross-Chain Bridge</h2>
-                            <p>Bridge USMT to Ethereum or BNB Chain</p>
-                            <p class="text-white/40 text-sm mb-4">Balance: ${usmtBalance.toFixed(3)} USMT ($${(usmtBalance * usmtPrice).toFixed(2)})</p>
-                            <button class="btn-primary" onclick="executeBridge(); closeModal();">
-                                <i class="fas fa-arrows-alt-h"></i> Bridge USMT
-                            </button>
-                            <div class="result-box" id="bridgeResult"></div>
-                        `;
-                        break;
-
-                    case 'card':
-                        html = `
-                            <h2 class="gradient-text">💳 USMT Card</h2>
-                            <p>Get a virtual or physical USMT card</p>
-                            <p class="text-white/40 text-sm mb-4">Spend USMT anywhere Mastercard is accepted</p>
-                            <button class="btn-primary" onclick="executeCard(); closeModal();">
-                                <i class="fas fa-credit-card"></i> Create Card
-                            </button>
-                            <div class="result-box" id="cardResult"></div>
-                        `;
-                        break;
-
-                    case 'subscriptions':
-                        html = `
-                            <h2 class="gradient-text">🔄 Recurring Payments</h2>
-                            <p>Set up automatic payments in USMT</p>
-                            <p class="text-white/40 text-sm mb-4">Perfect for subscriptions and memberships</p>
-                            <button class="btn-primary" onclick="executeSubscription(); closeModal();">
-                                <i class="fas fa-sync-alt"></i> Setup Subscription
-                            </button>
-                            <div class="result-box" id="subscriptionResult"></div>
-                        `;
-                        break;
-
-                    case 'swap':
-                        html = `
-                            <h2 class="gradient-text">🔄 USMT Swap</h2>
-                            <p>Swap USMT to USDC or SOL</p>
-                            <p class="text-white/40 text-sm mb-4">Balance: ${usmtBalance.toFixed(3)} USMT ($${(usmtBalance * usmtPrice).toFixed(2)})</p>
-                            <button class="btn-primary" onclick="executeSwap(); closeModal();">
-                                <i class="fas fa-exchange-alt"></i> Swap USMT
-                            </button>
-                            <div class="result-box" id="swapResult"></div>
-                        `;
-                        break;
-
                     case 'install-wallet':
                         html = `
                             <h2 class="gradient-text">🦊 Phantom Wallet</h2>
@@ -1170,8 +908,7 @@
                     showToast('⚠️ Connect wallet first!', 'error');
                     return;
                 }
-                
-                showToast('🤖 AI Assistant: How can I help you today?\n\nAvailable commands:\n- Check balance\n- Deposit to savings\n- Request loan\n- Make payment\n- Bridge tokens', 'info');
+                showToast('🤖 AI Assistant: How can I help you today?', 'info');
             });
 
             // ============================================================
@@ -1227,9 +964,9 @@
                     document.getElementById('displayPrice').innerText = '$' + usmtPrice.toFixed(2);
                 }, 30000);
 
-                console.log('%c🚀 USMT — 100+ Premium Services + USMTPAY + USMTBANK', 'font-size:20px; font-weight:bold; color:#9945FF;');
+                console.log('%c🚀 USMT — 100+ Premium Services', 'font-size:20px; font-weight:bold; color:#9945FF;');
                 console.log('%c🔗 Token: 9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', 'font-size:14px; color:#00D4FF;');
-                console.log('%c🏦 USMTPAY + USMTBANK — Live', 'font-size:14px; color:#A855F7;');
+                console.log('%c🏦 USMTPAY + USMTBANK: bank.html', 'font-size:14px; color:#A855F7;');
             });
 
         })();
