@@ -327,61 +327,71 @@
             let usmtPrice = 0.25;
 
             // ============================================================
-            // ===== РЕАЛЬНЫЙ БАЛАНС ЧЕРЕЗ HELIUS RPC (БЕЗ CORS) =====
+            // ===== РЕАЛЬНЫЙ БАЛАНС ЧЕРЕЗ SOLANA RPC (ОФИЦИАЛЬНЫЙ МЕТОД) =====
             // ============================================================
             async function getUSMTBalance(address) {
                 if (!address) return 0;
 
                 try {
-                    // Используем публичный Helius RPC (без API-ключа)
-                    const rpcUrl = 'https://rpc.helius.xyz/?api-key=';
-                    
-                    const response = await fetch(rpcUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            id: 1,
-                            method: 'getTokenAccountsByOwner',
-                            params: [
-                                address,
-                                {
-                                    mint: USMT_CONFIG.mintAddress
-                                },
-                                {
-                                    encoding: 'jsonParsed'
-                                }
-                            ]
-                        })
-                    });
+                    // Используем публичный RPC Helius
+                    const connection = new solanaWeb3.Connection(
+                        'https://mainnet.helius-rpc.com/?api-key=',
+                        'confirmed'
+                    );
 
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        console.error('RPC Error:', data.error);
-                        return 0;
-                    }
+                    const pubKey = new solanaWeb3.PublicKey(address);
+                    const tokenMint = new solanaWeb3.PublicKey(USMT_CONFIG.mintAddress);
 
-                    if (!data.result || !data.result.value || data.result.value.length === 0) {
-                        console.log('ℹ️ USMT не найден');
-                        return 0;
+                    // Получаем все аккаунты токена
+                    const tokenAccounts = await connection.getTokenAccountsByOwner(
+                        pubKey,
+                        { mint: tokenMint },
+                        { encoding: 'jsonParsed' }
+                    );
+
+                    if (!tokenAccounts.value || tokenAccounts.value.length === 0) {
+                        console.log('ℹ️ USMT не найден в Mainnet, пробуем Devnet...');
+                        
+                        // Пробуем Devnet
+                        const devnetConnection = new solanaWeb3.Connection(
+                            'https://api.devnet.solana.com',
+                            'confirmed'
+                        );
+                        
+                        const devnetAccounts = await devnetConnection.getTokenAccountsByOwner(
+                            pubKey,
+                            { mint: tokenMint },
+                            { encoding: 'jsonParsed' }
+                        );
+                        
+                        if (!devnetAccounts.value || devnetAccounts.value.length === 0) {
+                            console.log('ℹ️ USMT не найден ни в одной сети');
+                            return 0;
+                        }
+                        
+                        let totalBalance = 0;
+                        for (const account of devnetAccounts.value) {
+                            if (account.account.data && account.account.data.parsed && account.account.data.parsed.info) {
+                                const balance = account.account.data.parsed.info.tokenAmount.uiAmount;
+                                totalBalance += balance;
+                            }
+                        }
+                        console.log('✅ Найдено USMT в Devnet:', totalBalance);
+                        return totalBalance;
                     }
 
                     let totalBalance = 0;
-                    for (const account of data.result.value) {
+                    for (const account of tokenAccounts.value) {
                         if (account.account.data && account.account.data.parsed && account.account.data.parsed.info) {
                             const balance = account.account.data.parsed.info.tokenAmount.uiAmount;
                             totalBalance += balance;
                         }
                     }
-
-                    console.log('✅ Найдено USMT:', totalBalance);
+                    console.log('✅ Найдено USMT в Mainnet:', totalBalance);
                     return totalBalance;
 
                 } catch (error) {
-                    console.error('❌ Ошибка:', error);
+                    console.error('❌ Ошибка получения баланса:', error);
                     return 0;
                 }
             }
@@ -937,7 +947,7 @@
 
                 console.log('%c🏦 USMTPAY + USMTBANK — Real Banking', 'font-size:20px; font-weight:bold; color:#A855F7;');
                 console.log('%c🔗 Token: 9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', 'font-size:14px; color:#00D4FF;');
-                console.log('%c✅ Исправлена работа через Helius RPC', 'font-size:12px; color:#00ff88;');
+                console.log('%c✅ Исправлен метод получения баланса', 'font-size:12px; color:#00ff88;');
             });
 
         })();
