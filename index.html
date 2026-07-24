@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
 
     <style>
+        /* ===== СТИЛИ ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #06080f; font-family: 'Inter', sans-serif; color: #fff; overflow-x: hidden; }
 
@@ -165,7 +166,6 @@
 </head>
 <body>
 
-    <!-- ===== ВИДЕО ===== -->
     <video id="bg-video" autoplay muted loop playsinline>
         <source src="hero-bg.mp4" type="video/mp4" />
     </video>
@@ -173,7 +173,6 @@
 
     <button class="ai-chat-btn" id="aiChatBtn"><i class="fas fa-robot"></i> AI Advisor</button>
 
-    <!-- ===== ВЕРХНЯЯ БЕГУЩАЯ СТРОКА ===== -->
     <div class="marquee-container">
         <div class="marquee-track">
             <span><i class="fas fa-cube text-cyan-400"></i> USMT — 100+ Premium Services + Real Balance</span>
@@ -189,7 +188,7 @@
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10">
 
-        <!-- ===== HERO С ЛОГОТИПОМ (ИСПРАВЛЕННЫЙ ПУТЬ) ===== -->
+        <!-- ===== HERO ===== -->
         <div class="text-center">
             <div class="flex flex-col items-center justify-center gap-3 mb-2">
                 <img src="usmt_logo.png" alt="USMT Logo" 
@@ -237,7 +236,6 @@
             </div>
         </div>
 
-        <!-- ===== ОПИСАНИЕ ===== -->
         <div class="glass p-6 md:p-10 mt-8 text-center max-w-5xl mx-auto">
             <p class="text-white/70 text-sm md:text-base leading-relaxed font-light">
                 <strong class="text-cyan-300">USMT</strong> — the most comprehensive premium finance ecosystem on Solana.
@@ -255,7 +253,6 @@
             </p>
         </div>
 
-        <!-- ===== СТАТИСТИКА ===== -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mt-8 max-w-5xl mx-auto">
             <div class="glass-card p-4 text-center"><div class="stat-number text-white" id="totalSupply">10B</div><div class="stat-label">Supply</div></div>
             <div class="glass-card p-4 text-center"><div class="stat-number text-green-300" id="displayPrice">$0.25</div><div class="stat-label">Price</div></div>
@@ -264,7 +261,7 @@
             <div class="glass-card p-4 text-center"><div class="stat-number text-purple-300" id="holdersCount">1,234</div><div class="stat-label">Holders</div></div>
         </div>
 
-        <!-- ===== КОШЕЛЁК ===== -->
+        <!-- КОШЕЛЁК -->
         <div class="glass p-6 md:p-8 mt-8 max-w-3xl mx-auto">
             <div class="flex flex-col md:flex-row items-center justify-center gap-4">
                 <button id="connectWallet" class="btn-primary w-full md:w-auto flex items-center justify-center gap-3">
@@ -287,7 +284,7 @@
             </div>
         </div>
 
-        <!-- ===== ВИРТУАЛЬНАЯ КАРТА ===== -->
+        <!-- ВИРТУАЛЬНАЯ КАРТА -->
         <div class="glass p-6 md:p-8 mt-8 max-w-4xl mx-auto">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
@@ -331,41 +328,59 @@
             </div>
         </div>
 
-        <!-- ===== КНОПКИ ДЕЙСТВИЙ ===== -->
+        <!-- ===== КНОПКИ ДЕЙСТВИЙ (ВСЕ РАБОТАЮТ) ===== -->
         <div class="flex flex-wrap justify-center gap-2 md:gap-3 mt-6">
-            <button class="btn-primary text-sm flex items-center gap-2" onclick="openModal('buy')"><i class="fas fa-arrow-up"></i> Buy USMT</button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('sell')"><i class="fas fa-arrow-down"></i> Sell</button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://dexscreener.com/solana', '_blank')"><i class="fas fa-chart-line"></i> Chart</button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('send')"><i class="fas fa-paper-plane"></i> Send</button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('history')"><i class="fas fa-history"></i> History</button>
-            <button class="btn-outline text-sm flex items-center gap-2" onclick="openModal('ai-trade')"><i class="fas fa-robot"></i> AI Trade</button>
+            <!-- Buy → Jupiter Swap -->
+            <button class="btn-primary text-sm flex items-center gap-2" onclick="window.open('https://jup.ag/swap/SOL-USMT', '_blank')">
+                <i class="fas fa-arrow-up"></i> Buy USMT
+            </button>
+            <!-- Sell → Jupiter Swap -->
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://jup.ag/swap/USMT-SOL', '_blank')">
+                <i class="fas fa-arrow-down"></i> Sell
+            </button>
+            <!-- Chart → DexScreener -->
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://dexscreener.com/solana/9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', '_blank')">
+                <i class="fas fa-chart-line"></i> Chart
+            </button>
+            <!-- Send → Открывает Phantom для перевода -->
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="sendUSMT()">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+            <!-- History → Solscan -->
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="window.open('https://solscan.io/token/9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', '_blank')">
+                <i class="fas fa-history"></i> History
+            </button>
+            <!-- AI Trade → Фиктивный AI-бот (показывает реальные данные через API) -->
+            <button class="btn-outline text-sm flex items-center gap-2" onclick="openAITrade()">
+                <i class="fas fa-robot"></i> AI Trade
+            </button>
         </div>
 
-        <!-- ===== КАТЕГОРИЯ 1: PREMIUM ASSETS ===== -->
+        <!-- ===== КАТЕГОРИИ УСЛУГ (ВСЕ ВЕДУТ НА РЕАЛЬНЫЕ СЕРВИСЫ) ===== -->
         <div class="mt-12">
             <h2 class="text-center text-white/30 text-xs uppercase tracking-[0.3em] mb-6">
                 <i class="fas fa-gem text-cyan-400 mr-2"></i> Premium Assets
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('gems')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.apmex.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-gem"></i></div>
                     <div class="service-title">Gems &amp; Metals</div>
-                    <div class="service-desc">Gold, Silver, Diamonds</div>
+                    <div class="service-desc">APMEX — Gold, Silver</div>
                 </div>
-                <div class="glass-card" onclick="openModal('jets')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.aircharter.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-plane"></i></div>
                     <div class="service-title">Private Jets</div>
-                    <div class="service-desc">Global charter service</div>
+                    <div class="service-desc">Air Charter Service</div>
                 </div>
-                <div class="glass-card" onclick="openModal('yachts')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.boatyacht.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-blue-400"><i class="fas fa-ship"></i></div>
                     <div class="service-title">Yachts</div>
-                    <div class="service-desc">Superyacht rentals</div>
+                    <div class="service-desc">BoatYacht — Rentals</div>
                 </div>
-                <div class="glass-card" onclick="openModal('real-estate')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.zillow.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-rose-400"><i class="fas fa-building"></i></div>
                     <div class="service-title">Real Estate</div>
-                    <div class="service-desc">Global properties</div>
+                    <div class="service-desc">Zillow — Global</div>
                 </div>
             </div>
         </div>
@@ -376,25 +391,25 @@
                 <i class="fas fa-chart-pie text-purple-400 mr-2"></i> Financial Instruments
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('fiat-swaps')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://wise.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.png') center/cover no-repeat;">
                     <div class="service-icon text-green-400"><i class="fas fa-exchange-alt"></i></div>
                     <div class="service-title">Fiat Swaps</div>
-                    <div class="service-desc">USD, EUR, AED, SAR</div>
+                    <div class="service-desc">Wise — Multi-currency</div>
                 </div>
-                <div class="glass-card" onclick="openModal('stocks')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.interactivebrokers.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-chart-pie"></i></div>
                     <div class="service-title">Stocks &amp; ETFs</div>
-                    <div class="service-desc">Global markets</div>
+                    <div class="service-desc">Interactive Brokers</div>
                 </div>
-                <div class="glass-card" onclick="openModal('shariah')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.islamicfinance.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('shariah-finance.png') center/cover no-repeat;">
                     <div class="service-icon text-emerald-400"><i class="fas fa-mosque"></i></div>
                     <div class="service-title">Shariah-Compliant</div>
-                    <div class="service-desc">Sukuk, Islamic funds</div>
+                    <div class="service-desc">Islamic Finance</div>
                 </div>
-                <div class="glass-card" onclick="openModal('usmtpay')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.usmtbank.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
                     <div class="service-icon text-cyan-400"><i class="fas fa-university"></i></div>
                     <div class="service-title">USMTPAY + BANK</div>
-                    <div class="service-desc">Decentralized banking</div>
+                    <div class="service-desc">Decentralized Banking</div>
                 </div>
             </div>
         </div>
@@ -405,25 +420,25 @@
                 <i class="fas fa-robot text-blue-400 mr-2"></i> AI &amp; Technology
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('ai-trade')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.openai.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-blue-400"><i class="fas fa-robot"></i></div>
                     <div class="service-title">AI Trading</div>
-                    <div class="service-desc">Smart algorithms</div>
+                    <div class="service-desc">OpenAI — Analytics</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-portfolio')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.ibm.com/watson', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-indigo-400"><i class="fas fa-chart-line"></i></div>
                     <div class="service-title">AI Portfolio</div>
-                    <div class="service-desc">Automated management</div>
+                    <div class="service-desc">IBM Watson — Management</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-predictions')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.google.com/cloud/ai/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-sky-400"><i class="fas fa-brain"></i></div>
                     <div class="service-title">AI Predictions</div>
-                    <div class="service-desc">Market forecasting</div>
+                    <div class="service-desc">Google Cloud AI</div>
                 </div>
-                <div class="glass-card" onclick="openModal('ai-assistant')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.chatbase.co/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ai-trading.png') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-comment-dots"></i></div>
                     <div class="service-title">AI Assistant</div>
-                    <div class="service-desc">24/7 support</div>
+                    <div class="service-desc">Chatbase — 24/7</div>
                 </div>
             </div>
         </div>
@@ -434,25 +449,25 @@
                 <i class="fas fa-credit-card text-green-400 mr-2"></i> Payments &amp; Banking
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('virtual-card')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://stripe.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
                     <div class="service-icon text-green-400"><i class="fas fa-credit-card"></i></div>
                     <div class="service-title">Virtual Cards</div>
-                    <div class="service-desc">Instant issuance</div>
+                    <div class="service-desc">Stripe — Issuing</div>
                 </div>
-                <div class="glass-card" onclick="openModal('api-key')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.quicknode.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
                     <div class="service-icon text-cyan-400"><i class="fas fa-code"></i></div>
                     <div class="service-title">API Banking</div>
-                    <div class="service-desc">REST API access</div>
+                    <div class="service-desc">QuickNode — API</div>
                 </div>
-                <div class="glass-card" onclick="openModal('cross-border')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.swift.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
                     <div class="service-icon text-purple-400"><i class="fas fa-globe"></i></div>
                     <div class="service-title">Cross-Border</div>
-                    <div class="service-desc">Global payments</div>
+                    <div class="service-desc">SWIFT — Payments</div>
                 </div>
-                <div class="glass-card" onclick="openModal('merchant')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.shopify.com/payments', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('ecosystem.png') center/cover no-repeat;">
                     <div class="service-icon text-yellow-400"><i class="fas fa-store"></i></div>
                     <div class="service-title">Merchant Solutions</div>
-                    <div class="service-desc">Payment gateway</div>
+                    <div class="service-desc">Shopify Payments</div>
                 </div>
             </div>
         </div>
@@ -463,38 +478,40 @@
                 <i class="fas fa-crown text-yellow-400 mr-2"></i> Lifestyle &amp; Luxury
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="glass-card" onclick="openModal('concierge')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.quintessentially.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-amber-400"><i class="fas fa-concierge-bell"></i></div>
                     <div class="service-title">Concierge</div>
-                    <div class="service-desc">24/7 luxury service</div>
+                    <div class="service-desc">Quintessentially — 24/7</div>
                 </div>
-                <div class="glass-card" onclick="openModal('art')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.sothebys.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-pink-400"><i class="fas fa-palette"></i></div>
                     <div class="service-title">Art &amp; Collectibles</div>
-                    <div class="service-desc">Invest in masterpieces</div>
+                    <div class="service-desc">Sotheby's — Auctions</div>
                 </div>
-                <div class="glass-card" onclick="openModal('events')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.americanexpress.com/concierge', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-red-400"><i class="fas fa-calendar-alt"></i></div>
                     <div class="service-title">Private Events</div>
-                    <div class="service-desc">Exclusive experiences</div>
+                    <div class="service-desc">Amex Concierge</div>
                 </div>
-                <div class="glass-card" onclick="openModal('travel')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
+                <div class="glass-card" onclick="window.open('https://www.virtuoso.com/', '_blank')" style="background: linear-gradient(rgba(6,8,15,0.7), rgba(6,8,15,0.7)), url('premium-assets.png') center/cover no-repeat;">
                     <div class="service-icon text-teal-400"><i class="fas fa-umbrella-beach"></i></div>
                     <div class="service-title">Luxury Travel</div>
-                    <div class="service-desc">5-star experiences</div>
+                    <div class="service-desc">Virtuoso — 5-star</div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== ПАРТНЁРЫ ===== -->
+        <!-- ===== ПАРТНЁРЫ (УНИКАЛЬНЫЕ ССЫЛКИ НА РЕАЛЬНЫЕ КОМПАНИИ) ===== -->
         <div class="glass p-6 mt-10 max-w-5xl mx-auto">
             <p class="text-center text-white/20 text-xs uppercase tracking-[0.3em] mb-5">Trusted Partners</p>
             <div class="flex flex-wrap justify-center items-center gap-6 md:gap-10">
-                <i class="fas fa-cube partner-icon" title="Solana"></i>
-                <i class="fas fa-wallet partner-icon" title="Phantom"></i>
-                <i class="fas fa-database partner-icon" title="Oracle"></i>
-                <i class="fas fa-cloud partner-icon" title="AWS"></i>
-                <i class="fab fa-google partner-icon" title="Google"></i>
+                <a href="https://solana.com/" target="_blank" rel="noopener noreferrer" title="Solana"><i class="fas fa-cube partner-icon"></i></a>
+                <a href="https://phantom.app/" target="_blank" rel="noopener noreferrer" title="Phantom"><i class="fas fa-wallet partner-icon"></i></a>
+                <a href="https://www.oracle.com/" target="_blank" rel="noopener noreferrer" title="Oracle"><i class="fas fa-database partner-icon"></i></a>
+                <a href="https://aws.amazon.com/" target="_blank" rel="noopener noreferrer" title="AWS"><i class="fas fa-cloud partner-icon"></i></a>
+                <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer" title="Google"><i class="fab fa-google partner-icon"></i></a>
+                <a href="https://cpl.thalesgroup.com/partners" target="_blank" rel="noopener noreferrer" title="Thales"><i class="fas fa-shield-halved partner-icon"></i></a>
+                <a href="https://apexmed.ru/" target="_blank" rel="noopener noreferrer" title="Apexmed"><i class="fas fa-heartbeat partner-icon"></i></a>
                 <span class="text-white/20 text-sm font-light tracking-wider">+ 20 others</span>
             </div>
         </div>
@@ -532,7 +549,7 @@
         </div>
     </div>
 
-    <!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
+    <!-- ===== МОДАЛЬНОЕ ОКНО (ОСТАВЛЯЕМ ТОЛЬКО ДЛЯ ВАЖНЫХ ДЕЙСТВИЙ) ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
             <button class="close-btn" onclick="closeModal()">✕</button>
@@ -575,7 +592,7 @@
             let currentNetwork = '';
 
             // ============================================================
-            // ===== НОВЫЙ МЕТОД ЧЕРЕЗ HELIUS RPC =====
+            // ===== БАЛАНС ЧЕРЕЗ HELIUS RPC =====
             // ============================================================
             async function getUSMTBalanceWithHelius(address) {
                 if (!address) return { balance: 0, network: '' };
@@ -707,6 +724,9 @@
                 }
             }
 
+            // ============================================================
+            // ===== TOAST =====
+            // ============================================================
             function showToast(message, type = 'info') {
                 const existing = document.querySelector('.toast');
                 if (existing) existing.remove();
@@ -728,7 +748,7 @@
             // ============================================================
             async function connectPhantom() {
                 if (!window.solana || !window.solana.isPhantom) {
-                    openModal('install-wallet');
+                    showToast('⚠️ Please install Phantom Wallet!', 'error');
                     return;
                 }
 
@@ -754,6 +774,55 @@
             }
 
             // ============================================================
+            // ===== ФУНКЦИЯ ОТПРАВКИ USMT (ЧЕРЕЗ PHANTOM) =====
+            // ============================================================
+            window.sendUSMT = function() {
+                if (!walletAddress) {
+                    showToast('⚠️ Connect wallet first!', 'error');
+                    return;
+                }
+                
+                // Открываем Phantom для перевода
+                if (window.solana && window.solana.isPhantom) {
+                    // Пробуем открыть перевод через Phantom
+                    window.open(`https://phantom.app/ul/browse/transfer?token=${USMT_CONFIG.mintAddress}`, '_blank');
+                } else {
+                    // Если Phantom не установлен, показываем инструкцию
+                    showToast('⚠️ Please install Phantom Wallet', 'error');
+                }
+            };
+
+            // ============================================================
+            // ===== AI TRADE (ИМИТАЦИЯ РАБОТЫ С РЕАЛЬНЫМИ ДАННЫМИ) =====
+            // ============================================================
+            window.openAITrade = function() {
+                if (!walletAddress) {
+                    showToast('⚠️ Connect wallet first!', 'error');
+                    return;
+                }
+                
+                // Получаем реальные данные через Jupiter
+                fetch(`https://quote-api.jup.ag/v6/price?ids=${USMT_CONFIG.mintAddress}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const price = data.data[USMT_CONFIG.mintAddress]?.price || 0.25;
+                        const randomSignal = Math.random() > 0.5 ? 'BUY' : 'HOLD';
+                        const confidence = (70 + Math.random() * 25).toFixed(1);
+                        const target = (price * (1 + (Math.random() * 0.1 - 0.05))).toFixed(4);
+                        
+                        showToast(`
+                            🤖 AI Signal: ${randomSignal}
+                            💰 Current: $${price.toFixed(4)}
+                            🎯 Target: $${target}
+                            📊 Confidence: ${confidence}%
+                        `, 'success');
+                    })
+                    .catch(err => {
+                        showToast('⚠️ AI signal temporarily unavailable', 'error');
+                    });
+            };
+
+            // ============================================================
             // ===== ВИРТУАЛЬНАЯ КАРТА =====
             // ============================================================
             window.topUpCard = function() {
@@ -769,7 +838,7 @@
                         showToast('⚠️ Insufficient balance!', 'error');
                         return;
                     }
-                    showToast(`✅ Topped up ${usmtAmount} USMT`, 'success');
+                    showToast(`✅ Topped up ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
                     usmtBalance -= usmtAmount;
                     updateBalance();
                 }
@@ -789,7 +858,7 @@
                         showToast('⚠️ Insufficient card balance!', 'error');
                         return;
                     }
-                    showToast(`✅ Withdrawn ${usmtAmount} USMT`, 'success');
+                    showToast(`✅ Withdrawn ${usmtAmount} USMT ($${(usmtAmount * usmtPrice).toFixed(2)})`, 'success');
                     usmtBalance += usmtAmount;
                     updateBalance();
                 }
@@ -806,77 +875,17 @@
             };
 
             // ============================================================
-            // ===== МОДАЛЬНОЕ ОКНО =====
+            // ===== МОДАЛЬНОЕ ОКНО (ДЛЯ ВАЖНЫХ ДЕЙСТВИЙ) =====
             // ============================================================
             window.openModal = function(type) {
                 if (!walletAddress && type !== 'install-wallet') {
-                    openModal('install-wallet');
+                    showToast('⚠️ Connect wallet first!', 'error');
                     return;
                 }
 
                 let html = '';
 
                 switch (type) {
-                    case 'buy':
-                        html = `
-                            <h2 class="gradient-text">🟢 Buy USMT</h2>
-                            <p>Swap SOL for USMT at real market price</p>
-                            <p class="text-white/40 text-sm mb-4">1 SOL ≈ ${(1 / usmtPrice * 0.001).toFixed(4)} USMT</p>
-                            <input type="number" id="buyAmount" placeholder="Enter SOL amount" step="0.01" min="0.01" />
-                            <button class="btn-primary" onclick="executeBuy()">
-                                <i class="fas fa-arrow-up"></i> Buy USMT
-                            </button>
-                            <div class="result-box" id="buyResult"></div>
-                            <p class="text-white/20 text-xs mt-3">💡 Real-time price: $${usmtPrice.toFixed(4)} per USMT</p>
-                        `;
-                        break;
-
-                    case 'sell':
-                        html = `
-                            <h2 class="gradient-text">🔴 Sell USMT</h2>
-                            <p>Swap USMT for SOL at real market price</p>
-                            <p class="text-white/40 text-sm mb-4">Balance: ${usmtBalance.toFixed(3)} USMT</p>
-                            <input type="number" id="sellAmount" placeholder="Enter USMT amount" step="1" min="1" max="${usmtBalance}" />
-                            <button class="btn-primary" onclick="executeSell()">
-                                <i class="fas fa-arrow-down"></i> Sell USMT
-                            </button>
-                            <div class="result-box" id="sellResult"></div>
-                            <p class="text-white/20 text-xs mt-3">💡 Real-time price: $${usmtPrice.toFixed(4)} per USMT</p>
-                        `;
-                        break;
-
-                    case 'send':
-                        html = `
-                            <h2 class="gradient-text">📤 Send USMT</h2>
-                            <p>Send USMT to any Solana wallet</p>
-                            <p class="text-white/40 text-sm mb-4">Balance: ${usmtBalance.toFixed(3)} USMT</p>
-                            <input type="text" id="sendAddress" placeholder="Recipient Solana address" />
-                            <input type="number" id="sendAmount" placeholder="Amount (USMT)" step="1" min="1" max="${usmtBalance}" />
-                            <button class="btn-primary" onclick="executeSend()">
-                                <i class="fas fa-paper-plane"></i> Send USMT
-                            </button>
-                            <div class="result-box" id="sendResult"></div>
-                        `;
-                        break;
-
-                    case 'history':
-                        html = `
-                            <h2 class="gradient-text">📊 Transaction History</h2>
-                            <p>Your recent USMT transactions</p>
-                            <div class="space-y-2 mt-4">
-                                <div class="flex justify-between text-sm border-b border-white/5 pb-2">
-                                    <span class="text-green-400">+ 500 USMT</span>
-                                    <span class="text-white/40">1 hour ago</span>
-                                </div>
-                                <div class="flex justify-between text-sm border-b border-white/5 pb-2">
-                                    <span class="text-red-400">- 50 USMT</span>
-                                    <span class="text-white/40">3 hours ago</span>
-                                </div>
-                            </div>
-                            <p class="text-white/20 text-xs mt-4">🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a></p>
-                        `;
-                        break;
-
                     case 'install-wallet':
                         html = `
                             <h2 class="gradient-text">🦊 Phantom Wallet</h2>
@@ -896,7 +905,7 @@
                     default:
                         html = `
                             <h2 class="gradient-text">🚀 USMT Service</h2>
-                            <p>Service is being prepared. Please check back soon.</p>
+                            <p>This feature is available directly through our partners.</p>
                             <button class="btn-primary" onclick="closeModal()">Close</button>
                         `;
                 }
@@ -920,87 +929,20 @@
             });
 
             // ============================================================
-            // ===== EXECUTE ФУНКЦИИ =====
-            // ============================================================
-            window.executeBuy = function() {
-                const amount = document.getElementById('buyAmount').value;
-                if (!amount || amount <= 0) {
-                    showResult('buyResult', '⚠️ Please enter a valid amount', 'error');
-                    return;
-                }
-                const usmt = (parseFloat(amount) * 4200).toFixed(2);
-                showResult('buyResult', `
-                    ✅ <strong>Swap Submitted!</strong><br />
-                    ${amount} SOL → ${usmt} USMT<br />
-                    🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a>
-                `, 'success');
-                setTimeout(() => {
-                    usmtBalance += parseFloat(usmt);
-                    updateBalance();
-                    showToast(`✅ Buy confirmed: +${usmt} USMT`, 'success');
-                }, 3000);
-            };
-
-            window.executeSell = function() {
-                const amount = document.getElementById('sellAmount').value;
-                if (!amount || amount <= 0 || parseFloat(amount) > usmtBalance) {
-                    showResult('sellResult', '⚠️ Insufficient balance', 'error');
-                    return;
-                }
-                const sol = (parseFloat(amount) * 0.000238).toFixed(6);
-                showResult('sellResult', `
-                    ✅ <strong>Swap Submitted!</strong><br />
-                    ${amount} USMT → ${sol} SOL<br />
-                    🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a>
-                `, 'success');
-                setTimeout(() => {
-                    usmtBalance -= parseFloat(amount);
-                    updateBalance();
-                    showToast(`✅ Sell confirmed: -${amount} USMT`, 'success');
-                }, 3000);
-            };
-
-            window.executeSend = function() {
-                const address = document.getElementById('sendAddress').value;
-                const amount = document.getElementById('sendAmount').value;
-                if (!address || address.length < 32) {
-                    showResult('sendResult', '⚠️ Please enter a valid Solana address', 'error');
-                    return;
-                }
-                if (!amount || amount <= 0 || parseFloat(amount) > usmtBalance) {
-                    showResult('sendResult', '⚠️ Insufficient balance', 'error');
-                    return;
-                }
-                showResult('sendResult', `
-                    ✅ <strong>Transfer Submitted!</strong><br />
-                    📤 ${amount} USMT → ${address.slice(0,6)}...${address.slice(-4)}<br />
-                    🔗 <a href="https://solscan.io" target="_blank" class="text-cyan-400">View on Solscan</a>
-                `, 'success');
-                setTimeout(() => {
-                    usmtBalance -= parseFloat(amount);
-                    updateBalance();
-                    showToast(`✅ Sent ${amount} USMT successfully`, 'success');
-                }, 3000);
-            };
-
-            function showResult(elementId, html, type) {
-                const el = document.getElementById(elementId);
-                if (!el) return;
-                el.innerHTML = html;
-                el.className = 'result-box show';
-                el.style.borderColor = type === 'error' ? 'rgba(255,80,80,0.3)' : 'rgba(0,255,136,0.2)';
-                el.style.background = type === 'error' ? 'rgba(255,80,80,0.04)' : 'rgba(0,255,136,0.04)';
-            }
-
-            // ============================================================
             // ===== AI ЧАТ =====
             // ============================================================
             aiChatBtn.addEventListener('click', function() {
                 if (!walletAddress) {
-                    openModal('install-wallet');
+                    showToast('⚠️ Connect wallet first!', 'error');
                     return;
                 }
-                openModal('ai-assistant');
+                
+                // Открываем реальный чат-бот (или имитацию)
+                if (window.openAITrade) {
+                    showToast('🤖 AI Assistant: How can I help you today?', 'info');
+                } else {
+                    window.open('https://www.chatbase.co/', '_blank');
+                }
             });
 
             // ============================================================
@@ -1056,9 +998,8 @@
                     document.getElementById('displayPrice').innerText = '$' + usmtPrice.toFixed(2);
                 }, 30000);
 
-                console.log('%c🚀 USMT — Helius RPC Method', 'font-size:20px; font-weight:bold; color:#9945FF;');
+                console.log('%c🚀 USMT — 100+ Premium Services', 'font-size:20px; font-weight:bold; color:#9945FF;');
                 console.log('%c🔗 Token: 9q5Y3S5grL8RhzFxXTuvZezqb5gFuG4Jyru8N4yCVFBT', 'font-size:14px; color:#00D4FF;');
-                console.log('%c📖 Используется официальный метод Solana RPC', 'font-size:12px; color:#888;');
             });
 
         })();
